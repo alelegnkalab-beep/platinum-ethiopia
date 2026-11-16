@@ -10,13 +10,20 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AirdropRouteImport } from './routes/airdrop'
 import { Route as DailyRouteImport } from './routes/daily'
 import { Route as ReferralRouteImport } from './routes/referral'
 import { Route as TasksRouteImport } from './routes/tasks'
+import { Route as WalletRouteImport } from './routes/wallet'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AirdropRoute = AirdropRouteImport.update({
+  id: '/airdrop',
+  path: '/airdrop',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DailyRoute = DailyRouteImport.update({
@@ -34,39 +41,59 @@ const TasksRoute = TasksRouteImport.update({
   path: '/tasks',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WalletRoute = WalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/airdrop': typeof AirdropRoute
   '/daily': typeof DailyRoute
   '/referral': typeof ReferralRoute
   '/tasks': typeof TasksRoute
+  '/wallet': typeof WalletRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/airdrop': typeof AirdropRoute
   '/daily': typeof DailyRoute
   '/referral': typeof ReferralRoute
   '/tasks': typeof TasksRoute
+  '/wallet': typeof WalletRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/airdrop': typeof AirdropRoute
   '/daily': typeof DailyRoute
   '/referral': typeof ReferralRoute
   '/tasks': typeof TasksRoute
+  '/wallet': typeof WalletRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/daily' | '/referral' | '/tasks'
+  fullPaths: '/' | '/airdrop' | '/daily' | '/referral' | '/tasks' | '/wallet'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/daily' | '/referral' | '/tasks'
-  id: '__root__' | '/' | '/daily' | '/referral' | '/tasks'
+  to: '/' | '/airdrop' | '/daily' | '/referral' | '/tasks' | '/wallet'
+  id:
+    | '__root__'
+    | '/'
+    | '/airdrop'
+    | '/daily'
+    | '/referral'
+    | '/tasks'
+    | '/wallet'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AirdropRoute: typeof AirdropRoute
   DailyRoute: typeof DailyRoute
   ReferralRoute: typeof ReferralRoute
   TasksRoute: typeof TasksRoute
+  WalletRoute: typeof WalletRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -76,6 +103,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/airdrop': {
+      id: '/airdrop'
+      path: '/airdrop'
+      fullPath: '/airdrop'
+      preLoaderRoute: typeof AirdropRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/daily': {
@@ -99,14 +133,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TasksRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/wallet': {
+      id: '/wallet'
+      path: '/wallet'
+      fullPath: '/wallet'
+      preLoaderRoute: typeof WalletRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AirdropRoute: AirdropRoute,
   DailyRoute: DailyRoute,
   ReferralRoute: ReferralRoute,
   TasksRoute: TasksRoute,
+  WalletRoute: WalletRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
