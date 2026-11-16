@@ -76,7 +76,3 @@ export function Countdown({ to, compact }: { to: number; compact?: boolean }) {
   );
 }
 
-export function useRequireSignIn() {
-  const { signedIn } = useStore();
-  return signedIn;
-}
