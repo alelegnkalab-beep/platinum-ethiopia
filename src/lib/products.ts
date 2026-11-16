@@ -28,10 +28,11 @@ export type Product = {
 };
 
 // Swatch values are display-only product colors shown as small dots under the slider.
-const SEED: Omit<Product, "postedAt" | "bids" | "comments" | "liked">[] & {
+type SeedItem = Omit<Product, "postedAt" | "bids" | "comments" | "liked"> & {
   seedBids: [string, number][];
   seedComments: [string, string][];
-}[] = [
+};
+const SEED: SeedItem[] = [
   {
     id: "iphone-15-pro-max",
     name: "iPhone 15 Pro Max",
