@@ -15,7 +15,7 @@ export function bidderCount(p: Product) {
   return new Set(p.bids.map((b) => b.user)).size;
 }
 
-export function ProductCard({ product: p, eager }: { product: Product; eager?: boolean }) {
+export function ProductCard({ product: p, eager }: { product: Product; eager?: boolean | undefined }) {
   const { toggleLike, addComment } = useStore();
   const now = useNow(60_000);
   const [showComments, setShowComments] = useState(false);

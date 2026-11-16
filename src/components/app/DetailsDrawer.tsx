@@ -66,7 +66,7 @@ export function DetailsDrawer({
           <DrawerHeader className="px-0 text-left">
             <div className="flex gap-3">
               <img
-                src={p.slides[0].image}
+                src={p.slides[0]?.image}
                 alt={p.name}
                 width={832}
                 height={1040}

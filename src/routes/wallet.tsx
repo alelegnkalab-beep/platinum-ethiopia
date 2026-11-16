@@ -23,13 +23,16 @@ function WalletPage() {
   const { points, signedIn, txs, withdrawals, withdraw } = useStore();
   const [open, setOpen] = useState(false);
   const [amount, setAmount] = useState("");
-  const [method, setMethod] = useState(METHODS[0]);
+  const [method, setMethod] = useState<string>("ቴሌብር");
   const [acct, setAcct] = useState("");
   const balance = signedIn ? points : 0;
   const unlocked = balance >= MIN_ACTION_POINTS;
 
   const submit = () => {
-    if (!acct.trim()) return toast.error("የሂሳብ ወይም የስልክ ቁጥር ያስገቡ");
+    if (!acct.trim()) {
+      toast.error("የሂሳብ ወይም የስልክ ቁጥር ያስገቡ");
+      return;
+    }
     const r = withdraw(Math.floor(Number(amount)), method, acct.trim());
     if (r.ok) {
       toast.success(r.message);
@@ -54,7 +57,10 @@ function WalletPage() {
           className="mt-5 w-full"
           disabled={!signedIn}
           onClick={() => {
-            if (!unlocked) return toast.error(`ለማውጣት ቢያንስ ${fmt(MIN_ACTION_POINTS)} ነጥብ (100 ብር) ያስፈልጋል`);
+            if (!unlocked) {
+              toast.error(`ለማውጣት ቢያንስ ${fmt(MIN_ACTION_POINTS)} ነጥብ (100 ብር) ያስፈልጋል`);
+              return;
+            }
             setAmount(String(balance));
             setOpen(true);
           }}

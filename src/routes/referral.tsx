@@ -18,15 +18,21 @@ function ReferralPage() {
   const link = typeof window !== "undefined" && signedIn ? `${window.location.origin}/login?ref=${code}` : "";
 
   const copy = async (v: string) => {
-    if (!signedIn) return toast.error("እባክዎ መጀመሪያ ይግቡ");
+    if (!signedIn) {
+      toast.error("እባክዎ መጀመሪያ ይግቡ");
+      return;
+    }
     await navigator.clipboard.writeText(v);
     toast.success("ተቀድቷል");
   };
   const share = async () => {
-    if (!signedIn) return toast.error("እባክዎ መጀመሪያ ይግቡ");
+    if (!signedIn) {
+      toast.error("እባክዎ መጀመሪያ ይግቡ");
+      return;
+    }
     const text = `ፕላቲኒየም ኢትዮጵያን ተቀላቀል! ${WELCOME_BONUS_POINTS} ነጥብ ስጦታ ታገኛለህ። ኮዴ፡ ${code}`;
     if (navigator.share) await navigator.share({ title: "ፕላቲኒየም ኢትዮጵያ", text, url: link }).catch(() => {});
-    else copy(`${text} ${link}`);
+    else await copy(`${text} ${link}`);
   };
 
   return (

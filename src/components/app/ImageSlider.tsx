@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import type { Slide } from "@/lib/products";
 import { cn } from "@/lib/utils";
 
-export function ImageSlider({ slides, alt, eager }: { slides: Slide[]; alt: string; eager?: boolean }) {
+export function ImageSlider({ slides, alt, eager }: { slides: Slide[]; alt: string; eager?: boolean | undefined }) {
   const ref = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
 

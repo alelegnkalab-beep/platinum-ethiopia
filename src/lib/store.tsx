@@ -118,7 +118,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         ...freshState(now),
         products: state.products,
         signedIn: true,
-        account: { name: name.trim(), phone: clean, code, joinedAt: now, invitedBy: invitedBy?.trim() || undefined },
+        account: { name: name.trim(), phone: clean, code, joinedAt: now, ...(invitedBy?.trim() ? { invitedBy: invitedBy.trim() } : {}) },
         points: WELCOME_BONUS_POINTS,
         txs: [{ id: uid(), type: "welcome", points: WELCOME_BONUS_POINTS, label: "የእንኳን ደህና መጡ ስጦታ", at: now }],
       });
@@ -176,7 +176,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       const now = Date.now();
       const held = heldOn(productId);
       const v = validateBid({ balance: state.points, amountEtb, bids: p.bids, heldOnItem: held, postedAt: p.postedAt, now });
-      if (!v.ok) return { ok: false, error: BID_ERRORS[v.reason] };
+      if (!v.ok) return { ok: false, error: BID_ERRORS[v.reason] ?? "ስህተት" };
       const user = state.account.name;
       setState((s) => ({
         ...s,
@@ -230,7 +230,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     (points, method, account) => {
       if (!state.signedIn) return needAuth;
       const v = canWithdraw(state.points, points);
-      if (!v.ok) return { ok: false, error: WITHDRAW_ERRORS[v.reason] };
+      if (!v.ok) return { ok: false, error: WITHDRAW_ERRORS[v.reason] ?? "ስህተት" };
       const now = Date.now();
       setState((s) => ({
         ...s,

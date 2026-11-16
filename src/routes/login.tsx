@@ -47,8 +47,14 @@ function LoginPage() {
     e.preventDefault();
     const n = name.trim();
     const p = phone.replace(/\s/g, "");
-    if (n.length < 2) return toast.error("እባክዎ ሙሉ ስምዎን ያስገቡ");
-    if (!/^(\+251|0)?9\d{8}$|^(\+251|0)?7\d{8}$/.test(p)) return toast.error("ትክክለኛ የስልክ ቁጥር ያስገቡ (09xxxxxxxx)");
+    if (n.length < 2) {
+      toast.error("እባክዎ ሙሉ ስምዎን ያስገቡ");
+      return;
+    }
+    if (!/^(\+251|0)?[79]\d{8}$/.test(p)) {
+      toast.error("ትክክለኛ የስልክ ቁጥር ያስገቡ (09xxxxxxxx)");
+      return;
+    }
     const r = join(n.slice(0, 60), p, ref);
     if (r.ok) {
       toast.success(r.message);

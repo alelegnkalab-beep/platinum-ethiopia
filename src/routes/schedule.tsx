@@ -54,7 +54,7 @@ function SchedulePage() {
       <ul className="grid grid-cols-5 gap-2">
         {products.slice(0, AI_DAILY_COUNT).map((p) => (
           <li key={p.id} className="text-center">
-            <img src={p.slides[0].image} alt={p.name} width={832} height={1040} loading="lazy" className="aspect-square w-full rounded-2xl border object-cover" />
+            <img src={p.slides[0]?.image} alt={p.name} width={832} height={1040} loading="lazy" className="aspect-square w-full rounded-2xl border object-cover" />
             <p className="mt-1 line-clamp-2 text-[10px] leading-tight text-muted-foreground">{p.name}</p>
           </li>
         ))}
