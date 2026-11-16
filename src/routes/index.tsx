@@ -1,23 +1,38 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Flame } from "lucide-react";
+import { AiBanner } from "@/components/app/AiBanner";
+import { JoinBanner } from "@/components/app/bits";
+import { ProductCard } from "@/components/app/ProductCard";
+import { useStore } from "@/lib/store";
+import { pageHead } from "@/lib/seo";
 
-// The home route ships no og:image, so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => pageHead("የቀጥታ ጨረታዎች", "iPhone፣ Samsung፣ MacBook፣ PS5 እና ሌሎችም በ50 ብር ጀምረው ለ21 ቀን ይጫረቱ።"),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
+  const { products } = useStore();
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div>
+      <JoinBanner />
+      <AiBanner />
+      <div className="mb-3 flex items-end justify-between">
+        <div>
+          <h1 className="flex items-center gap-2 text-lg font-bold">
+            <Flame className="size-5 text-primary-glow" /> የዛሬ ጨረታዎች
+          </h1>
+          <p className="text-xs text-muted-foreground">ሁሉም በ50 ብር ይጀምራሉ · 21 ቀን</p>
+        </div>
+        <span className="rounded-full border bg-secondary/60 px-3 py-1 text-xs font-semibold">
+          {products.length} ምርቶች
+        </span>
+      </div>
+      <div className="space-y-6">
+        {products.map((p, i) => (
+          <ProductCard key={p.id} product={p} eager={i === 0} />
+        ))}
+      </div>
     </div>
   );
 }
