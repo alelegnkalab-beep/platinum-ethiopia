@@ -33,3 +33,4 @@ use the editor.
 - All business numbers (points, ETB rate, limits, auction length, AI drop time) live in `src/lib/rules.ts` with tests in `src/lib/rules.test.ts`; never hardcode them elsewhere — keeps rules in one checked place.
 - App state is currently device-local (`src/lib/store.tsx`, localStorage) — prototype stage before a backend exists.
 - Shared shell (header, 3-dots menu, bottom bar) lives in `src/components/app/AppShell.tsx`, mounted from `__root.tsx`.
+- Every client UI dependency is listed in `optimizeDeps.include` in `vite.config.ts`; add new ones there — on-demand re-bundling mid-session loads two React copies and blanks the preview.
