@@ -15,4 +15,24 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  vite: {
+    // Pre-bundle every UI dependency at startup. Without this Vite discovers them one page at a
+    // time and re-bundles mid-session, leaving open pages with two React copies (blank screen).
+    optimizeDeps: {
+      include: [
+        "@radix-ui/react-accordion",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-progress",
+        "@radix-ui/react-select",
+        "@radix-ui/react-slot",
+        "class-variance-authority",
+        "clsx",
+        "lucide-react",
+        "sonner",
+        "tailwind-merge",
+        "vaul",
+      ],
+    },
+  },
 });
