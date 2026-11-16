@@ -28,3 +28,8 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+- All business numbers (points, ETB rate, limits, auction length, AI drop time) live in `src/lib/rules.ts` with tests in `src/lib/rules.test.ts`; never hardcode them elsewhere — keeps rules in one checked place.
+- App state is currently device-local (`src/lib/store.tsx`, localStorage) — prototype stage before a backend exists.
+- Shared shell (header, 3-dots menu, bottom bar) lives in `src/components/app/AppShell.tsx`, mounted from `__root.tsx`.

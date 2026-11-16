@@ -45,7 +45,7 @@ function WalletPage() {
       <JoinBanner />
       <PageTitle icon={Wallet} title="ዋሌት" subtitle={`100 ነጥብ = ${100 / POINTS_PER_ETB} ብር`} />
 
-      <section className="relative overflow-hidden rounded-[1.75rem] bg-platinum-gradient p-5 text-platinum-foreground shadow-platinum shimmer">
+      <section className="relative overflow-hidden rounded-[1.75rem] bg-platinum-gradient p-5 text-platinum-foreground shadow-platinum">
         <p className="text-xs font-semibold opacity-70">ጠቅላላ ሂሳብ</p>
         <p className="mt-1 font-display text-4xl font-extrabold">
           {fmt(balance)} <span className="text-base">ነጥብ</span>
