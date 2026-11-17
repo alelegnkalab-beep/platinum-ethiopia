@@ -78,7 +78,7 @@ export function PayoBidBox({ product: p, open }: { product: Product; open: boole
   }, [loadVerified]);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open) return undefined;
     void loadVerified();
     void refreshMine();
     const t = setInterval(() => void refreshMine(), 5_000);
@@ -96,7 +96,10 @@ export function PayoBidBox({ product: p, open }: { product: Product; open: boole
   const submit = async () => {
     if (!account) return;
     const amountEtb = Number(amount);
-    if (!Number.isFinite(amountEtb) || amountEtb < min) return toast.error(`ዝቅተኛው ${etb(min)} ብር ነው`);
+    if (!Number.isFinite(amountEtb) || amountEtb < min) {
+      toast.error(`ዝቅተኛው ${etb(min)} ብር ነው`);
+      return;
+    }
     // Open the tab now (inside the click) so the browser doesn't block it as a pop-up.
     const tab = window.open("", "_blank");
     setBusy(true);

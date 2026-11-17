@@ -11,7 +11,7 @@ const Input = z.object({
 
 /** create-payo-order: makes a pending direct bid and a Payo payment link for it. */
 export const createPayoOrder = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => Input.parse(d))
+  .validator((d: unknown) => Input.parse(d))
   .handler(async ({ data }) => {
     const { getRequest } = await import("@tanstack/react-start/server");
     const { createPayoOrderForBid } = await import("./payo.server");
