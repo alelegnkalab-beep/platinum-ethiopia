@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Countdown } from "./bits";
+import { PayoBidBox } from "./PayoBidBox";
 
 export function DetailsDrawer({
   product: p,
@@ -188,6 +189,8 @@ export function DetailsDrawer({
               </div>
             )}
           </div>
+
+          <PayoBidBox product={p} open={open} />
         </div>
       </DrawerContent>
     </Drawer>
