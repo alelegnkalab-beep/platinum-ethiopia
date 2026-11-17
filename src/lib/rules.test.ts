@@ -76,3 +76,21 @@ describe("rules", () => {
     expect(canCheckIn([addisDay(now)], now + DAY_MS)).toBe(true);
   });
 });
+
+import { CASH_BID_MIN_ETB, PAYO_LINK_MINUTES, minNextCashBid, validateCashBid } from "./rules";
+
+describe("direct (Payo) bids", () => {
+  it("first direct bid starts at 50 ETB", () => {
+    expect(CASH_BID_MIN_ETB).toBe(50);
+    expect(minNextCashBid([])).toBe(50);
+  });
+  it("accepts 50.25 ETB", () => expect(validateCashBid(50.25, [])).toEqual({ ok: true, amountEtb: 50.25 }));
+  it("rejects below 50 ETB", () => expect(validateCashBid(49.99, []).ok).toBe(false));
+  it("rejects more than 2 decimals", () => expect(validateCashBid(50.255, [])).toMatchObject({ reason: "cents" }));
+  it("must beat the top verified bid by at least 0.01 ETB", () => {
+    expect(minNextCashBid([50.25, 60])).toBe(60.01);
+    expect(validateCashBid(60, [60]).ok).toBe(false);
+    expect(validateCashBid(60.01, [60]).ok).toBe(true);
+  });
+  it("payment links last 10 minutes", () => expect(PAYO_LINK_MINUTES).toBe(10));
+});
