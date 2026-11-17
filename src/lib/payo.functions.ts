@@ -1,16 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
-import { PRODUCT_IDS } from "./products";
-import { createPayoOrderForBid } from "./payo.server";
-
-const PRODUCT_NAMES: Record<string, string> = {
-  "iphone-15-pro-max": "iPhone 15 Pro Max",
-  "galaxy-s24-ultra": "Samsung Galaxy S24 Ultra",
-  "macbook-pro-m3": "MacBook Pro M3",
-  "ps5-slim": "PS5 Slim",
-  "sony-wh-1000xm5": "Sony WH-1000XM5",
-};
+import { PRODUCT_IDS, seedProducts } from "./products";
 
 const Input = z.object({
   productId: z.enum(PRODUCT_IDS),
@@ -23,11 +13,14 @@ const Input = z.object({
 export const createPayoOrder = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => Input.parse(d))
   .handler(async ({ data }) => {
+    const { getRequest } = await import("@tanstack/react-start/server");
+    const { createPayoOrderForBid } = await import("./payo.server");
     let requestUrl: string | undefined;
     try {
       requestUrl = getRequest().url;
     } catch {
       requestUrl = undefined;
     }
-    return createPayoOrderForBid({ ...data, productName: PRODUCT_NAMES[data.productId] ?? data.productId, requestUrl });
+    const productName = seedProducts(0).find((p) => p.id === data.productId)?.name ?? data.productId;
+    return createPayoOrderForBid({ ...data, productName, requestUrl });
   });
