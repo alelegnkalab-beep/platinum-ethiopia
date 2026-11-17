@@ -14,7 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      payo_bids: {
+        Row: {
+          amount_etb: number
+          bidder_name: string
+          bidder_phone: string
+          created_at: string
+          id: string
+          payment_url: string | null
+          payo_order_id: string | null
+          product_id: string
+          status: string
+          updated_at: string
+          verified_at: string | null
+        }
+        Insert: {
+          amount_etb: number
+          bidder_name: string
+          bidder_phone: string
+          created_at?: string
+          id?: string
+          payment_url?: string | null
+          payo_order_id?: string | null
+          product_id: string
+          status?: string
+          updated_at?: string
+          verified_at?: string | null
+        }
+        Update: {
+          amount_etb?: number
+          bidder_name?: string
+          bidder_phone?: string
+          created_at?: string
+          id?: string
+          payment_url?: string | null
+          payo_order_id?: string | null
+          product_id?: string
+          status?: string
+          updated_at?: string
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
