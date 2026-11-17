@@ -20,6 +20,7 @@ import { Route as ReferralRouteImport } from './routes/referral'
 import { Route as ScheduleRouteImport } from './routes/schedule'
 import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as WalletRouteImport } from './routes/wallet'
+import { Route as ApiPublicPayoWebhookRouteImport } from './routes/api/public/payo-webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -76,6 +77,11 @@ const WalletRoute = WalletRouteImport.update({
   path: '/wallet',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPayoWebhookRoute = ApiPublicPayoWebhookRouteImport.update({
+  id: '/api/public/payo-webhook',
+  path: '/api/public/payo-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -89,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/schedule': typeof ScheduleRoute
   '/tasks': typeof TasksRoute
   '/wallet': typeof WalletRoute
+  '/api/public/payo-webhook': typeof ApiPublicPayoWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -102,6 +109,7 @@ export interface FileRoutesByTo {
   '/schedule': typeof ScheduleRoute
   '/tasks': typeof TasksRoute
   '/wallet': typeof WalletRoute
+  '/api/public/payo-webhook': typeof ApiPublicPayoWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -116,6 +124,7 @@ export interface FileRoutesById {
   '/schedule': typeof ScheduleRoute
   '/tasks': typeof TasksRoute
   '/wallet': typeof WalletRoute
+  '/api/public/payo-webhook': typeof ApiPublicPayoWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -131,6 +140,7 @@ export interface FileRouteTypes {
     | '/schedule'
     | '/tasks'
     | '/wallet'
+    | '/api/public/payo-webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -144,6 +154,7 @@ export interface FileRouteTypes {
     | '/schedule'
     | '/tasks'
     | '/wallet'
+    | '/api/public/payo-webhook'
   id:
     | '__root__'
     | '/'
@@ -157,6 +168,7 @@ export interface FileRouteTypes {
     | '/schedule'
     | '/tasks'
     | '/wallet'
+    | '/api/public/payo-webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -171,6 +183,7 @@ export interface RootRouteChildren {
   ScheduleRoute: typeof ScheduleRoute
   TasksRoute: typeof TasksRoute
   WalletRoute: typeof WalletRoute
+  ApiPublicPayoWebhookRoute: typeof ApiPublicPayoWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -252,6 +265,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WalletRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/payo-webhook': {
+      id: '/api/public/payo-webhook'
+      path: '/api/public/payo-webhook'
+      fullPath: '/api/public/payo-webhook'
+      preLoaderRoute: typeof ApiPublicPayoWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -267,6 +287,7 @@ const rootRouteChildren: RootRouteChildren = {
   ScheduleRoute: ScheduleRoute,
   TasksRoute: TasksRoute,
   WalletRoute: WalletRoute,
+  ApiPublicPayoWebhookRoute: ApiPublicPayoWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

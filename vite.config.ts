@@ -21,6 +21,7 @@ export default defineConfig({
     optimizeDeps: {
       include: [
         "@radix-ui/react-accordion",
+        "@supabase/supabase-js",
         "@radix-ui/react-dialog",
         "@radix-ui/react-dropdown-menu",
         "@radix-ui/react-progress",

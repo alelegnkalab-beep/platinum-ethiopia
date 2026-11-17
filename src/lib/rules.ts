@@ -88,3 +88,25 @@ export function splitDuration(ms: number) {
     seconds: s % 60,
   };
 }
+
+// ---- Direct bids paid by Telebirr / bank receipt through Payo (no points) ----
+export const CASH_BID_MIN_ETB = START_PRICE_ETB; // first direct bid can be 50 ETB (e.g. 50.25)
+export const CASH_BID_STEP_ETB = 0.01; // a new direct bid must beat the top verified one by at least 1 cent
+export const PAYO_LINK_MINUTES = 10; // Payo payment links expire after 10 minutes
+export const CASH_BID_MAX_PENDING = 3; // open (unpaid) direct bids one phone may hold at once
+
+export const roundEtb = (n: number) => Math.round(n * 100) / 100;
+
+/** Lowest direct bid allowed, given the amounts of already verified (active) direct bids. */
+export function minNextCashBid(activeAmounts: number[]) {
+  if (activeAmounts.length === 0) return CASH_BID_MIN_ETB;
+  return Math.max(CASH_BID_MIN_ETB, roundEtb(Math.max(...activeAmounts) + CASH_BID_STEP_ETB));
+}
+
+export function validateCashBid(amountEtb: number, activeAmounts: number[]) {
+  if (!Number.isFinite(amountEtb) || amountEtb <= 0) return { ok: false as const, reason: "invalid" as const };
+  if (Math.abs(Math.round(amountEtb * 100) - amountEtb * 100) > 1e-6)
+    return { ok: false as const, reason: "cents" as const };
+  if (amountEtb < minNextCashBid(activeAmounts)) return { ok: false as const, reason: "too-low" as const };
+  return { ok: true as const, amountEtb: roundEtb(amountEtb) };
+}

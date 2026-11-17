@@ -134,3 +134,6 @@ export function seedProducts(postedAt: number): Product[] {
     })),
   }));
 }
+
+/** Ids of the auction items, used by the server to reject bids on unknown products. */
+export const PRODUCT_IDS = SEED.map((s) => s.id) as [string, ...string[]];
