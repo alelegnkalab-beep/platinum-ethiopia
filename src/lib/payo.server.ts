@@ -30,7 +30,7 @@ export function extractOrder(json: unknown): { orderId: string; paymentUrl: stri
 }
 
 /** Maps a Payo webhook payload to our bid status. Unknown or still-pending states return null. */
-export function payoStatusToBid(payload: { status?: string; event?: string }): BidStatus | null {
+export function payoStatusToBid(payload: { status?: string | undefined; event?: string | undefined }): BidStatus | null {
   const s = `${payload.event ?? ""} ${payload.status ?? ""}`.toLowerCase();
   if (/approved|paid|completed|success/.test(s)) return "active";
   if (/expired|cancel/.test(s)) return "expired";
@@ -130,7 +130,7 @@ export async function createPayoOrderForBid(input: {
   amountEtb: number;
   name: string;
   phone: string;
-  requestUrl?: string;
+  requestUrl?: string | undefined;
 }): Promise<CreateOrderResult> {
   const apiKey = process.env["PAYO_API_KEY"];
   if (!apiKey) return { ok: false, error: "not-configured" };

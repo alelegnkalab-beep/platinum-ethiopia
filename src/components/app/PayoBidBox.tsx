@@ -78,7 +78,7 @@ export function PayoBidBox({ product: p, open }: { product: Product; open: boole
   }, [loadVerified]);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open) return undefined;
     void loadVerified();
     void refreshMine();
     const t = setInterval(() => void refreshMine(), 5_000);
