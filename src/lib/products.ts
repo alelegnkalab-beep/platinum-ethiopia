@@ -137,3 +137,17 @@ export function seedProducts(postedAt: number): Product[] {
 
 /** Ids of the auction items, used by the server to reject bids on unknown products. */
 export const PRODUCT_IDS = SEED.map((s) => s.id) as [string, ...string[]];
+// ሁሉም ምርቶች 3 ቀለማት (ነጭ፣ ናይት ብላክ፣ ወርቃማ) እንዲኖራቸው የሚያደርግ
+SEED.forEach((item) => {
+  if (item.slides.length >= 2) {
+    item.slides[0] = { ...item.slides[0], label: "White", swatch: "#F8FAFC" };
+    item.slides[1] = { ...item.slides[1], label: "Night Black", swatch: "#0F172A" };
+    if (item.slides.length === 2) {
+      item.slides.push({
+        image: item.slides[0].image,
+        label: "Gold",
+        swatch: "#D4AF37",
+      });
+    }
+  }
+});
