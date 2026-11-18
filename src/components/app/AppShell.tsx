@@ -181,3 +181,69 @@ function MenuLink({
     </DropdownMenuItem>
   );
 }
+// በግራ በኩል ባለ ሦስት ሰረዝ (☰) የሚከፈት ሙሉ ሜኑ (6ቱን ዝርዝሮች ብቻ የያዘ)
+if (typeof window !== "undefined") {
+  setTimeout(() => {
+    const header = document.querySelector("header");
+    if (!header || document.getElementById("platinum-left-menu")) return;
+
+    // ነጥብን ከላይኛው ባር ላይ ማንሳት (ዋሌት ውስጥ ብቻ እንዲሆን)
+    header.querySelectorAll("span, div, a, button").forEach((el) => {
+      if (el.textContent && el.textContent.includes("ነጥብ")) {
+        (el as HTMLElement).style.display = "none";
+      }
+    });
+
+    // የግራ በኩል ሦስት ሰረዝ (☰) ቁልፍ እና ወደ ታች የሚዘረዘር ሜኑ መፍጠር
+    const menuWrapper = document.createElement("div");
+    menuWrapper.id = "platinum-left-menu";
+    menuWrapper.style.cssText = "position:relative;display:inline-flex;align-items:center;margin-right:8px;";
+
+    menuWrapper.innerHTML = `
+      <button id="plt-menu-btn" style="font-size:22px;padding:4px 10px;border-radius:10px;background:rgba(245,158,11,0.15);color:#fbbf24;border:1px solid rgba(245,158,11,0.4);cursor:pointer;">☰</button>
+      <div id="plt-menu-drawer" style="display:none;position:fixed;top:0;left:0;width:270px;height:100vh;background:#0f172a;border-right:1px solid rgba(245,158,11,0.3);padding:18px;z-index:9999;overflow-y:auto;box-shadow:4px 0 24px rgba(0,0,0,0.7);color:#f8fafc;font-family:sans-serif;">
+        <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:12px;margin-bottom:14px;">
+          <span style="font-weight:bold;color:#fbbf24;font-size:15px;">PL • ፕላቲኒየም ኢትዮጵያ</span>
+          <button id="plt-menu-close" style="background:none;border:none;color:#94a3b8;font-size:20px;cursor:pointer;">✕</button>
+        </div>
+        <div style="padding:10px;border-radius:10px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);font-size:11px;color:#fde68a;margin-bottom:14px;line-height:1.5;">
+          🏢 ድርጅቱ በየቀኑ ጠዋት 1:00 ሰዓት (7:00 LT) 1 አዲስ ኦሪጅናል የኤሌክትሮኒክስ ምርት ይለቃል።
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;">
+          <a href="/bids" style="padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.05);color:#fff;text-decoration:none;">📜 Bid History</a>
+          <a href="/profile" style="padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.05);color:#fff;text-decoration:none;">👤 My Profile</a>
+          <details style="padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.05);">
+            <summary style="cursor:pointer;color:#fbbf24;font-weight:bold;">🤖 AI እርዳታ (24/7)</summary>
+            <p style="margin-top:8px;font-size:11px;color:#cbd5e1;line-height:1.5;">
+              የቴሌብር ክፍያ ችግር ካጋጠመዎት የትራንዛክሽን ቁጥርዎን በዋሌት ገጽ ላይ ያስገቡ፤ በ5 ደቂቃ ውስጥ ይስተካከላል። ለማንኛውም ጥያቄ 24/7 ዝግጁ ነን።
+            </p>
+          </details>
+          <details style="padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.05);">
+            <summary style="cursor:pointer;color:#fff;">❓ የድርጅቱ FAQ</summary>
+            <p style="margin-top:8px;font-size:11px;color:#cbd5e1;line-height:1.5;">
+              1. ሲመዘገቡ 100 ነጥብ በነጻ ያገኛሉ።<br/>
+              2. በየቀኑ ጠዋት 1:00 ሰዓት 1 አዲስ ምርት ይለቀቃል።<br/>
+              3. 1,000 ነጥብ ሲሞላ በቀጥታ ወደ ቴሌብር ማውጣት ይችላሉ።
+            </p>
+          </details>
+          <details style="padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.05);">
+            <summary style="cursor:pointer;color:#fff;">ℹ️ About Us</summary>
+            <p style="margin-top:8px;font-size:11px;color:#cbd5e1;line-height:1.5;">
+              ፕላቲኒየም ኢትዮጵያ (Platinum Ethiopia) ኦሪጅናል የኤሌክትሮኒክስ ምርቶችን በግልጽ ጨረታ እና በተመጣጣኝ ዋጋ የሚያቀርብ ዘመናዊ የኢትዮጵያ መገበያያ መድረክ ነው።
+            </p>
+          </details>
+          <a href="/login" style="padding:10px 12px;border-radius:10px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#fca5a5;text-decoration:none;margin-top:6px;">🚪 Login / Logout</a>
+        </div>
+      </div>
+    `;
+
+    header.prepend(menuWrapper);
+    const btn = document.getElementById("plt-menu-btn");
+    const drawer = document.getElementById("plt-menu-drawer");
+    const closeBtn = document.getElementById("plt-menu-close");
+    if (btn && drawer && closeBtn) {
+      btn.onclick = () => (drawer.style.display = "block");
+      closeBtn.onclick = () => (drawer.style.display = "none");
+    }
+  }, 400);
+}
