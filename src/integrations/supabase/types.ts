@@ -56,6 +56,45 @@ export type Database = {
         }
         Relationships: []
       }
+      payo_deposits: {
+        Row: {
+          amount_etb: number
+          created_at: string
+          depositor_name: string
+          depositor_phone: string
+          id: string
+          payment_url: string | null
+          payo_order_id: string | null
+          status: string
+          updated_at: string
+          verified_at: string | null
+        }
+        Insert: {
+          amount_etb: number
+          created_at?: string
+          depositor_name: string
+          depositor_phone: string
+          id?: string
+          payment_url?: string | null
+          payo_order_id?: string | null
+          status?: string
+          updated_at?: string
+          verified_at?: string | null
+        }
+        Update: {
+          amount_etb?: number
+          created_at?: string
+          depositor_name?: string
+          depositor_phone?: string
+          id?: string
+          payment_url?: string | null
+          payo_order_id?: string | null
+          status?: string
+          updated_at?: string
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

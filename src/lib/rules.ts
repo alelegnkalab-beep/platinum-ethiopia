@@ -66,16 +66,32 @@ export function isFinished(opts: { category: Category; postedAt: number; totalBi
 
 export const batteryPercent = (totalBids: number) => Math.min(100, (Math.max(0, totalBids) / LUXURY_DRAW_BIDS) * 100);
 
-/** Each points bid is a separate entry and costs its full amount in points. */
-export function validateBid(opts: { balance: number; amountEtb: number; category: Category; finished: boolean }) {
-  const { balance, amountEtb, category, finished } = opts;
+/**
+ * Bids are paid from the in-app Wallet (ETB). Each bid is a separate entry and costs its full amount.
+ * `myAmounts` are the user's earlier bids on this item — repeating one would only cancel it out.
+ */
+export function validateBid(opts: {
+  walletEtb: number;
+  amountEtb: number;
+  category: Category;
+  finished: boolean;
+  myAmounts?: number[];
+}) {
+  const { walletEtb, amountEtb, category, finished, myAmounts = [] } = opts;
   if (finished) return { ok: false as const, reason: "ended" as const };
-  if (balance < MIN_ACTION_POINTS) return { ok: false as const, reason: "min-balance" as const };
   const a = checkBidAmount(category, amountEtb);
   if (!a.ok) return a;
-  const cost = etbToPoints(a.amountEtb);
-  if (cost > balance) return { ok: false as const, reason: "insufficient" as const };
-  return { ok: true as const, cost, amountEtb: a.amountEtb };
+  if (myAmounts.some((m) => cents(m) === cents(a.amountEtb))) return { ok: false as const, reason: "duplicate" as const };
+  if (a.amountEtb > walletEtb + 1e-9) return { ok: false as const, reason: "insufficient" as const };
+  return { ok: true as const, amountEtb: a.amountEtb };
+}
+
+/** Points → Wallet ETB. Using points needs at least 1,000 points (same as withdrawing or bidding). */
+export function canConvertPoints(balance: number, amountPoints: number) {
+  if (balance < MIN_ACTION_POINTS) return { ok: false as const, reason: "min-balance" as const };
+  if (!Number.isInteger(amountPoints) || amountPoints <= 0) return { ok: false as const, reason: "invalid" as const };
+  if (amountPoints > balance) return { ok: false as const, reason: "insufficient" as const };
+  return { ok: true as const, etb: pointsToEtb(amountPoints) };
 }
 
 /** Public display of a winner's phone: keeps the first 4 and last 2 digits. */
@@ -110,8 +126,15 @@ export function splitDuration(ms: number) {
   };
 }
 
-// ---- Direct bids paid by Telebirr / bank receipt through Payo (no points) ----
+// ---- Wallet top-ups paid by Telebirr / bank receipt through Payo ----
 export const PAYO_LINK_MINUTES = 10; // Payo payment links expire after 10 minutes
-export const CASH_BID_MAX_PENDING = 3; // open (unpaid) direct bids one phone may hold at once
+export const DEPOSIT_MAX_PENDING = 3; // open (unpaid) top-ups one phone may hold at once
+export const DEPOSIT_MIN_ETB = 1;
+export const DEPOSIT_MAX_ETB = 100_000;
 
-export const validateCashBid = (amountEtb: number, category: Category) => checkBidAmount(category, amountEtb);
+export function validateDeposit(amountEtb: number) {
+  if (!Number.isFinite(amountEtb) || amountEtb < DEPOSIT_MIN_ETB || amountEtb > DEPOSIT_MAX_ETB)
+    return { ok: false as const, reason: "invalid" as const };
+  if (Math.abs(cents(amountEtb) - amountEtb * 100) > 1e-6) return { ok: false as const, reason: "cents" as const };
+  return { ok: true as const, amountEtb: roundEtb(amountEtb) };
+}

@@ -7,6 +7,8 @@ import {
   PAYO_LINK_MINUTES,
   batteryPercent,
   canCheckIn,
+  canConvertPoints,
+  validateDeposit,
   canWithdraw,
   addisDay,
   checkBidAmount,
@@ -17,7 +19,6 @@ import {
   nextAiDrop,
   pointsToEtb,
   validateBid,
-  validateCashBid,
   WELCOME_BONUS_POINTS,
   CHECKIN_POINTS,
   REFERRAL_POINTS,
@@ -45,10 +46,10 @@ describe("rules", () => {
     expect(canWithdraw(1500, 900).ok).toBe(false);
   });
 
-  it("bidding with points needs at least 1,000 points", () => {
-    const base = { amountEtb: 71, category: "electronics" as const, finished: false };
-    expect(validateBid({ ...base, balance: 999 }).ok).toBe(false);
-    expect(validateBid({ ...base, balance: 1000 }).ok).toBe(true);
+  it("using points (converting to Wallet) needs at least 1,000 points", () => {
+    expect(canConvertPoints(999, 500).ok).toBe(false);
+    expect(canConvertPoints(1000, 1000)).toEqual({ ok: true, etb: 100 });
+    expect(canConvertPoints(1200, 1300).ok).toBe(false);
   });
 
   it("AI posts at 1:00 AM Addis Ababa time (22:00 UTC)", () => {
@@ -108,11 +109,23 @@ describe("auction end", () => {
   });
 });
 
-describe("direct (Payo) bids", () => {
-  it("accepts 70.25 ETB on electronics", () =>
-    expect(validateCashBid(70.25, "electronics")).toEqual({ ok: true, amountEtb: 70.25 }));
-  it("rejects 600 ETB on a house", () => expect(validateCashBid(600, "house").ok).toBe(false));
-  it("payment links last 10 minutes", () => expect(PAYO_LINK_MINUTES).toBe(10));
+describe("wallet bids", () => {
+  const base = { category: "electronics" as const, finished: false };
+  it("a bid is paid from the Wallet balance", () => {
+    expect(validateBid({ ...base, walletEtb: 70.24, amountEtb: 70.25 })).toMatchObject({ reason: "insufficient" });
+    expect(validateBid({ ...base, walletEtb: 70.25, amountEtb: 70.25 })).toEqual({ ok: true, amountEtb: 70.25 });
+  });
+  it("blocks bids at or below the minimum", () =>
+    expect(validateBid({ ...base, walletEtb: 1000, amountEtb: 70 })).toMatchObject({ reason: "too-low" }));
+  it("blocks repeating your own amount", () =>
+    expect(validateBid({ ...base, walletEtb: 1000, amountEtb: 72, myAmounts: [72] })).toMatchObject({ reason: "duplicate" }));
+  it("no bids after the auction ends", () =>
+    expect(validateBid({ ...base, finished: true, walletEtb: 1000, amountEtb: 80 })).toMatchObject({ reason: "ended" }));
+  it("Telebirr / bank top-up links last 10 minutes", () => expect(PAYO_LINK_MINUTES).toBe(10));
+  it("top-ups allow up to 2 decimals", () => {
+    expect(validateDeposit(150.25)).toEqual({ ok: true, amountEtb: 150.25 });
+    expect(validateDeposit(0).ok).toBe(false);
+  });
 });
 
 it("winner phone is partly hidden", () => expect(maskPhone("0911234578")).toBe("0911 •••• 78"));
