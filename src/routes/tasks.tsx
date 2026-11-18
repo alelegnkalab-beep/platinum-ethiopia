@@ -96,6 +96,30 @@ function TasksPage() {
           );
         })}
       </ul>
+          {/* የዕድል ስፒን (Spin) ክፍል */}
+      <div className="mt-6 p-4 rounded-2xl bg-gradient-to-br from-amber-500/20 to-yellow-600/10 border border-amber-500/30 text-center space-y-3">
+        <div className="text-3xl">🎡</div>
+        <h3 className="text-lg font-bold text-amber-300">የዕድል ስፒን (Lucky Spin)</h3>
+        <p className="text-xs text-slate-300">
+          በ 10 ብር ወይም በሰበሰቡት ነጥብ ያሽከርክሩ እና እስከ 500 ነጥብ ወይም የቴሌብር ሽልማት ያግኙ!
+        </p>
+        <div className="flex gap-2 justify-center pt-1">
+          <Button
+            className="rounded-full bg-amber-500 hover:bg-amber-600 text-black font-bold"
+            onClick={() => toast.success("🎡 ስፒን እየተሽከረከረ ነው... 25 ነጥብ አሸንፈዋል!")}
+          >
+            በ 10 ብር አሽከርክር
+          </Button>
+          <Button
+            variant="outline"
+            className="rounded-full border-amber-500/50 text-amber-300"
+            onClick={() => toast.success("🎡 በነጥብ አሽከርክረው 10 ነጥብ አግኝተዋል!")}
+          >
+            በ 50 ነጥብ ሞክር
+          </Button>
+        </div>
+      </div>
+  
     </div>
   );
 }
