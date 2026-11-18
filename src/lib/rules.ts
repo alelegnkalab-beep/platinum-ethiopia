@@ -138,3 +138,45 @@ export function validateDeposit(amountEtb: number) {
   if (Math.abs(cents(amountEtb) - amountEtb * 100) > 1e-6) return { ok: false as const, reason: "cents" as const };
   return { ok: true as const, amountEtb: roundEtb(amountEtb) };
 }
+
+// ---- Legacy rules still used by the current screens until the new bid box replaces them ----
+export const START_PRICE_ETB = 50;
+export function highestBid<T extends BidLike>(bids: T[]): T | undefined {
+  return [...bids].sort((a, b) => b.amountEtb - a.amountEtb || a.at - b.at)[0];
+}
+export function minNextBid(bids: BidLike[]) {
+  const top = highestBid(bids);
+  return top ? top.amountEtb + 1 : START_PRICE_ETB;
+}
+export function auctionWinner<T extends BidLike>(postedAt: number, bids: T[], now: number) {
+  return isAuctionEnded(postedAt, now) ? highestBid(bids) : undefined;
+}
+export function validatePointsBid(opts: {
+  balance: number;
+  amountEtb: number;
+  bids: BidLike[];
+  heldOnItem?: number;
+  postedAt: number;
+  now: number;
+}) {
+  const { balance, amountEtb, bids, heldOnItem = 0, postedAt, now } = opts;
+  if (isAuctionEnded(postedAt, now)) return { ok: false as const, reason: "ended" as const };
+  if (balance < MIN_ACTION_POINTS) return { ok: false as const, reason: "min-balance" as const };
+  if (!Number.isFinite(amountEtb) || amountEtb < minNextBid(bids)) return { ok: false as const, reason: "too-low" as const };
+  const cost = etbToPoints(amountEtb) - heldOnItem;
+  if (cost > balance) return { ok: false as const, reason: "insufficient" as const };
+  return { ok: true as const, cost };
+}
+export const CASH_BID_MIN_ETB = START_PRICE_ETB;
+export const CASH_BID_STEP_ETB = 0.01;
+export const CASH_BID_MAX_PENDING = DEPOSIT_MAX_PENDING;
+export function minNextCashBid(activeAmounts: number[]) {
+  if (activeAmounts.length === 0) return CASH_BID_MIN_ETB;
+  return Math.max(CASH_BID_MIN_ETB, roundEtb(Math.max(...activeAmounts) + CASH_BID_STEP_ETB));
+}
+export function validateCashBid(amountEtb: number, activeAmounts: number[]) {
+  if (!Number.isFinite(amountEtb) || amountEtb <= 0) return { ok: false as const, reason: "invalid" as const };
+  if (Math.abs(Math.round(amountEtb * 100) - amountEtb * 100) > 1e-6) return { ok: false as const, reason: "cents" as const };
+  if (amountEtb < minNextCashBid(activeAmounts)) return { ok: false as const, reason: "too-low" as const };
+  return { ok: true as const, amountEtb: roundEtb(amountEtb) };
+}

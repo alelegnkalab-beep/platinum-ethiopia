@@ -9,7 +9,7 @@ import {
   canWithdraw,
   lastAiDrop,
   pointsToEtb,
-  validateBid,
+  validatePointsBid as validateBid,
 } from "./rules";
 import type { TaskId } from "./tasks";
 
