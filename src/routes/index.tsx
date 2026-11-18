@@ -36,3 +36,13 @@ function Index() {
     </div>
   );
 }
+if (typeof window !== "undefined") {
+  setTimeout(() => {
+    document.querySelectorAll("div, p, span").forEach((el) => {
+      if (el.children.length === 0 && el.textContent && el.textContent.includes("AI")) {
+        const box = el.closest("div[class*='rounded']");
+        if (box) (box as HTMLElement).style.display = "none";
+      }
+    });
+  }, 300);
+}
