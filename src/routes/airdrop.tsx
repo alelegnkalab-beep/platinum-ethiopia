@@ -60,6 +60,52 @@ function AirdropPage() {
           </li>
         ))}
       </ul>
+            {/* የፕላቲኒየም ቶከን (Platinum Token) Coming Soon እና አክሲዮን መግዣ */}
+      <div className="mt-6 p-5 rounded-2xl bg-gradient-to-br from-amber-500/20 via-slate-900 to-blue-950/40 border border-amber-500/40 space-y-4">
+        <div className="flex items-center justify-between">
+          <span className="px-3 py-1 text-xs font-bold rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+            🚀 COMING SOON LAUNCH
+          </span>
+          <span className="text-xs text-slate-400">Platinum Token (PLT)</span>
+        </div>
+
+        <div className="space-y-2">
+          <h3 className="text-lg font-bold text-white">
+            የፕላቲኒየም ቶከን (PLT) የአክሲዮን ድርሻ
+          </h3>
+          <p className="text-xs text-slate-300 leading-relaxed">
+            የፕላቲኒየም ቶከን በቅርቡ በይፋ ላውንች (Launch) ይደረጋል። ቶከኑ በአፕሊኬሽኑ ጨረታዎች ላይ ዋና መገበያያ ሲሆን፣ ዛሬ ቀድመው አክሲዮን የሚገዙ ባለድርሻዎች ቶከኑ ገበያ ላይ ሲወጣ ልዩ ጉርሻ እና ትልቅ ትርፍ ያገኛሉ።
+          </p>
+        </div>
+
+        <div className="p-3 rounded-xl bg-black/40 border border-white/10 space-y-1 text-xs text-slate-300">
+          <div>✅ 100% ግልጽ የባለድርሻነት ምዝገባ</div>
+          <div>✅ በጨረታዎች ላይ ቅድሚያ የመሳተፍ መብት</div>
+          <div>✅ ከ 1,000 ብር ጀምሮ የአክሲዮን ድርሻ መግዛት ይቻላል</div>
+        </div>
+
+        <div className="grid grid-cols-3 gap-2 pt-1">
+          <a
+            href="/wallet"
+            className="py-2.5 px-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-black font-bold text-xs text-center"
+          >
+            1,000 ብር ግዛ
+          </a>
+          <a
+            href="/wallet"
+            className="py-2.5 px-2 rounded-xl bg-amber-500/90 hover:bg-amber-600 text-black font-bold text-xs text-center"
+          >
+            5,000 ብር ግዛ
+          </a>
+          <a
+            href="/wallet"
+            className="py-2.5 px-2 rounded-xl bg-amber-500/80 hover:bg-amber-600 text-black font-bold text-xs text-center"
+          >
+            10,000 ብር ግዛ
+          </a>
+        </div>
+      </div>
+
     </div>
   );
 }
