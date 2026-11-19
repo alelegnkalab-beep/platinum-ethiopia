@@ -27,6 +27,11 @@ function WalletPage() {
   const [acct, setAcct] = useState("");
   const balance = signedIn ? points : 0;
   const unlocked = balance >= MIN_ACTION_POINTS;
+    const [depositOpen, setDepositOpen] = useState(false);
+  const [etbBalance, setEtbBalance] = useState(0);
+  const [convertedPts, setConvertedPts] = useState(0);
+  const availablePts = Math.max(0, balance - convertedPts);
+
 
   const submit = () => {
     if (!acct.trim()) {
@@ -68,6 +73,91 @@ function WalletPage() {
           {unlocked ? <ArrowUpRight /> : <Lock />} ገንዘብ አውጣ
         </Button>
       </section>
+            <div className="mt-4 grid grid-cols-2 gap-3">
+        <Button
+          variant="glow"
+          size="xl"
+          className="w-full font-bold"
+          onClick={() => setDepositOpen(!depositOpen)}
+        >
+          <ArrowDownRight className="mr-1 size-5" /> ዲፖዚት (Deposit)
+        </Button>
+        <Button
+          variant="outline"
+          size="xl"
+          className="w-full font-bold"
+          disabled={!signedIn}
+          onClick={() => {
+            if (!unlocked && etbBalance <= 0) {
+              toast.error(`ለማውጣት ቢያንስ ${fmt(MIN_ACTION_POINTS)} ነጥብ ያስፈልጋል`);
+              return;
+            }
+            setAmount(String(etbBalance > 0 ? etbBalance : balance));
+            setOpen(true);
+          }}
+        >
+          <ArrowUpRight className="mr-1 size-5" /> ዊዝድሮው (Withdraw)
+        </Button>
+      </div>
+
+      {depositOpen && (
+        <Panel className="mt-3 border-amber-500/40 bg-amber-500/5">
+          <p className="text-sm font-bold text-amber-400">💳 በቴሌብር ዲፖዚት ያድርጉ</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            ወደ <span className="font-bold text-foreground">0900071005</span> ብር ልከው የትራንዛክሽን ቁጥሩን ያስገቡ (ሚኒመም 10 ብር)።
+          </p>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.currentTarget);
+              const depAmt = Number(formData.get("depAmount") || 0);
+              if (depAmt >= 10) {
+                setEtbBalance((prev) => prev + depAmt);
+                toast.success(`${depAmt} ብር ዲፖዚት ጥያቄ ተልኳል!`);
+                setDepositOpen(false);
+              }
+            }}
+            className="mt-3 space-y-2"
+          >
+            <Input name="depAmount" type="number" min={10} required placeholder="የብር መጠን (ቢያንስ 10 ብር)" className="h-11 rounded-xl" />
+            <Input name="txId" type="text" required placeholder="የቴሌብር ትራንዛክሽን ቁጥር" className="h-11 rounded-xl" />
+            <Button type="submit" variant="glow" className="w-full h-11 rounded-xl font-bold">
+              ዲፖዚት አረጋግጥ
+            </Button>
+          </form>
+        </Panel>
+      )}
+
+      <Panel className="mt-4 border-primary/30 bg-surface">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs text-muted-foreground">የፖይንት ካርድ (Available Points)</p>
+            <p className="mt-1 text-2xl font-extrabold text-primary">{fmt(availablePts)} ነጥብ</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              የአካውንት ብር (ለጨረታ እና ዊዝድሮው)፦ <span className="font-bold text-foreground">{fmt(etbBalance)} ብር</span>
+            </p>
+          </div>
+          <Button
+            size="sm"
+            variant="secondary"
+            className="rounded-xl font-bold"
+            disabled={availablePts <= 0}
+            onClick={() => {
+              const addedEtb = Math.floor(availablePts / 10);
+              if (addedEtb <= 0) {
+                toast.error("ለመቀየር ቢያንስ 10 ነጥብ ያስፈልጋል");
+                return;
+              }
+              setConvertedPts((prev) => prev + addedEtb * 10);
+              setEtbBalance((prev) => prev + addedEtb);
+              toast.success(`${addedEtb * 10} ነጥብ ወደ ${addedEtb} ብር ተቀይሯል!`);
+            }}
+          >
+            ወደ ብር ቀይር (Convert)
+          </Button>
+        </div>
+      </Panel>
+
 
       {!unlocked && (
         <Panel className="mt-4">
