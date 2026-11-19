@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+
+import { useNavigate } from "@tanstack/react-router";
 
 import { Eye, Heart, Info, MessageCircle, Send, Share2, Trophy, Users } from "lucide-react";
 import { toast } from "sonner";
@@ -108,7 +109,8 @@ export function ProductCard({ product: p, eager }: { product: Product; eager?: b
             type="button"
             variant="glow"
             className="h-11 flex-1 rounded-xl text-sm font-extrabold"
-            onClick={() => navigate("/wallet")}
+                        onClick={() => navigate({ to: "/wallet" })}
+
           >
             ክፈል / ጨርት ({fmt(bidAmount)} ብር)
           </Button>
