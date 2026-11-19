@@ -185,35 +185,5 @@ function WalletPage() {
         </DialogContent>
       </Dialog>
     </div>
-          {/* የነጥብ (Points)፣ ዲፖዚት እና ዊዝድሮ የተቀናጀ ሳጥን */}
-      <div className="mt-6 p-5 rounded-2xl bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/30 border border-amber-500/30 space-y-4">
-        <div className="flex items-center justify-between border-b border-white/10 pb-3">
-          <div>
-            <span className="text-xs text-slate-400 block">ያለዎት ጠቅላላ ነጥብ (Points)</span>
-            <span className="text-2xl font-extrabold text-amber-400">
-              {typeof window !== "undefined" ? localStorage.getItem("user_points") || "160" : "160"} ነጥብ
-            </span>
-          </div>
-          <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-semibold">
-            ✨ 100 ነጥብ = 10 ብር
-          </span>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3 text-xs">
-          <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 space-y-1">
-            <div className="font-bold text-emerald-400">📥 ዲፖዚት (Deposit)</div>
-            <p className="text-slate-300 leading-relaxed">
-              ዝቅተኛው ማስገቢያ **100 ብር** ነው። በቴሌብር ወይም በባንክ ሲያስገቡ ወዲያውኑ ወደ ሂሳብዎ ይገባል።
-            </p>
-          </div>
-          <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/30 space-y-1">
-            <div className="font-bold text-blue-400">📤 ዊዝድሮ (Withdraw)</div>
-            <p className="text-slate-300 leading-relaxed">
-              **1,000 ነጥብ** ሲሞላልዎት ወይም ያሸነፉትን ብር በቀጥታ ወደ **ቴሌብር** ማውጣት ይችላሉ።
-            </p>
-          </div>
-        </div>
-      </div>
-
   );
 }
