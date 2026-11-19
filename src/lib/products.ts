@@ -1,5 +1,6 @@
 import iphoneNatural from "@/assets/iphone-natural.jpg";
 import iphoneBlue from "@/assets/iphone-blue.jpg";
+import iphoneGold from "@/assets/iphone-gold.jpg";
 import s24Black from "@/assets/s24-black.jpg";
 import s24Gray from "@/assets/s24-gray.jpg";
 import macBlack from "@/assets/macbook-black.jpg";
@@ -43,7 +44,8 @@ const SEED: SeedItem[] = [
     slides: [
       { image: iphoneNatural, label: "Natural Titanium", swatch: "oklch(0.78 0.02 75)" },
       { image: iphoneBlue, label: "Blue Titanium", swatch: "oklch(0.45 0.06 250)" },
-    ],
+      
+    ],{ image: iphoneGold, label: "Gold Titanium" },
     views: 2840,
     likes: 312,
     seedBids: [["አበበ ተ.", 50], ["ሰላም ገ.", 58], ["ዮናስ ም.", 66]],
