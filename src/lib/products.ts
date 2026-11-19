@@ -137,16 +137,14 @@ export function seedProducts(postedAt: number): Product[] {
   }));
 }
 
-/** Ids of the auction items, used by the server to reject bids on unknown products. */
-
-// 
+// 3D ቪላ ቤት እና 3D ስፖርት መኪና መጨመሪያ
 SEED.push(
   {
     id: "luxury-3d-villa",
-    name: "የቅንጦት 3D ዘመናዊ ቪላ ቤት (Luxury Villa)",
-    tagline: "500 ካሬ · ባለ 2 ፎቅ ዘመናዊ 3D ዲዛይን",
+    name: "የቅንጦት 3D ዘመናዊ ቪላ ቤት (Luxury 3D Villa)",
+    tagline: "500 ካሬ · ባለ 2 ፎቅ ዘመናዊ መኖሪያ",
     description:
-      "በአዲስ አበባ እምብርት የሚገኝ ባለ 500 ካሬ ሜትር የቅንጦት 3D ዘመናዊ ቪላ ቤት። 5 መኝታ ክፍሎች፣ ዘመናዊ ሳሎን እና የመዋኛ ገንዳ ያለው። ወደ ጎን ስክሮል በማድረግ የተለያዩ 3D ዲዛይኖችን ይመልከቱ።",
+      "በአዲስ አበባ እምብርት የሚገኝ ባለ 500 ካሬ ሜትር ዘመናዊ 3D ቪላ ቤት።",
     specs: [
       "500 ካሬ ሜትር ሙሉ ይዞታ",
       "5 ዘመናዊ መኝታ ክፍሎች እና 6 መታጠቢያ",
@@ -154,21 +152,28 @@ SEED.push(
       "ሙሉ 3D Smart Home ዲዛይን",
     ],
     slides: [
-      { image: macBlack, label: "ዲዛይን 1፡ ውጫዊ 3D ቪላ" },
-      { image: macSilver, label: "ዲዛይን 2፡ የመዋኛ ገንዳ እይታ" },
-      { image: sonyBlack, label: "ዲዛይን 3፡ የውስጥ 3D ሳሎን" },
+      { image: macBlack, label: "ዲዛይን 1" },
+      { image: macSilver, label: "ዲዛይን 2" },
+      { image: sonyBlack, label: "ዲዛይን 3" },
     ],
+    postedAt: Date.now() - 3600 * 1000,
     views: 14250,
     likes: 1840,
-    seedBids: [["ዳዊት መ.", 601], ["ሰላም ታ.", 605]],
-    seedComments: [["ብሩክ አ.", "ይህ 3D ቤት በጣም ያምራል! ተጫርቻለሁ"]],
+    liked: false,
+    bids: [
+      { id: "v-b1", user: "ዳዊት መ.", amountEtb: 601, at: Date.now() - 1800000 },
+      { id: "v-b2", user: "ሳራ አ.", amountEtb: 650, at: Date.now() - 900000 },
+    ],
+    comments: [
+      { id: "v-c1", user: "ብሩክ አ.", text: "ይህ 3D ቪላ በጣም ያምራል!", at: Date.now() - 600000 },
+    ],
   },
   {
     id: "luxury-3d-car",
-    name: "የቅንጦት 3D ስፖርት መኪና (Luxury SUV 2026)",
-    tagline: "V8 Turbo · ሙሉ 3D ዘመናዊ ዲዛይን",
+    name: "የቅንጦት 3D ስፖርት መኪና (Luxury 3D Car)",
+    tagline: "V8 Turbo · ሙሉ 3D ዘመናዊ መኪና",
     description:
-      "የቅርብ ጊዜ ሞዴል የቅንጦት 3D ስፖርት መኪና። ባለ ሙሉ ፓኖራሚክ ጣሪያ እና ዘመናዊ የቆዳ ሳሎን ያለው። ወደ ጎን ስክሮል በማድረግ የተለያዩ 3D ዲዛይኖችን ይመልከቱ።",
+      "የቅርብ ጊዜ ሞዴል የቅንጦት 3D ስፖርት መኪና።",
     specs: [
       "2026 ሞዴል V8 Twin-Turbo ሞተር",
       "ሙሉ የቆዳ 3D የውስጥ ሳሎን",
@@ -176,14 +181,21 @@ SEED.push(
       "0 ኪሎ ሜትር የነዳ አዲስ መኪና",
     ],
     slides: [
-      { image: ps5Console, label: "ዲዛይን 1፡ የፊት 3D ስፖርት" },
-      { image: ps5Controller, label: "ዲዛይን 2፡ የጎን 3D ቅርጽ" },
-      { image: sonySilver, label: "ዲዛይን 3፡ የውስጥ 3D ሳሎን" },
+      { image: ps5Console, label: "ዲዛይን 1" },
+      { image: ps5Controller, label: "ዲዛይን 2" },
+      { image: sonySilver, label: "ዲዛይን 3" },
     ],
+    postedAt: Date.now() - 7200 * 1000,
     views: 11890,
     likes: 1520,
-    seedBids: [["ዮሐንስ በ.", 602], ["ሄለን ግ.", 610]],
-    seedComments: [["ሳሙኤል ተ.", "የመኪናው 3D ዲዛይን በጣም ያምራል!"]],
+    liked: false,
+    bids: [
+      { id: "c-b1", user: "ዮሐንስ በ.", amountEtb: 602, at: Date.now() - 2400000 },
+      { id: "c-b2", user: "ሄለን ተ.", amountEtb: 700, at: Date.now() - 1200000 },
+    ],
+    comments: [
+      { id: "c-c1", user: "ሳሙኤል ተ.", text: "የመኪናው 3D እይታ ልዩ ነው!", at: Date.now() - 500000 },
+    ],
   }
 );
 
