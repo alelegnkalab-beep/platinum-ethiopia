@@ -199,5 +199,5 @@ SEED.push(
     seedComments: [["ሳሙኤል ተ.", "የመኪናው 3D ዲዛይን በጣም ያምራል!"]],
   }
 );
-PRODUCT_IDS.push("luxury-3d-villa", "luxury-3d-car");
+
 export const PRODUCT_IDS = SEED.map((p) => p.id);
