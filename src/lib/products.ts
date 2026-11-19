@@ -1,6 +1,6 @@
 import iphoneNatural from "@/assets/iphone-natural.jpg";
 import iphoneBlue from "@/assets/iphone-blue.jpg";
-import iphoneGold from "@/assets/iphone-gold.jpg";
+
 import s24Black from "@/assets/s24-black.jpg";
 import s24Gray from "@/assets/s24-gray.jpg";
 import macBlack from "@/assets/macbook-black.jpg";
@@ -138,7 +138,7 @@ export function seedProducts(postedAt: number): Product[] {
 }
 
 /** Ids of the auction items, used by the server to reject bids on unknown products. */
-export const PRODUCT_IDS = SEED.map((s) => s.id) as [string, ...string[]];
+
 // ሁሉም ምርቶች 3 ቀለማት (ነጭ፣ ናይት ብላክ፣ ወርቃማ) እንዲኖራቸው የሚያደርግ
 SEED.forEach((item) => {
   if (item.slides.length >= 2) {
@@ -200,3 +200,4 @@ SEED.push(
   }
 );
 PRODUCT_IDS.push("luxury-3d-villa", "luxury-3d-car");
+export const PRODUCT_IDS = SEED.map((p) => p.id);
