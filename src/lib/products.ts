@@ -151,3 +151,81 @@ SEED.forEach((item) => {
     }
   }
 });
+// የቅንጦት 3D ቪላ ቤት እና የቅንጦት 3D መኪና (የተለያዩ 3D ዲዛይኖች)
+SEED.push(
+  {
+    id: "luxury-3d-villa",
+    name: "የቅንጦት 3D ዘመናዊ ቪላ ቤት (Luxury Villa)",
+    tagline: "500 ካሬ · ባለ 2 ፎቅ ዘመናዊ 3D ዲዛይን",
+    description:
+      "በአዲስ አበባ እምብርት የሚገኝ ባለ 500 ካሬ ሜትር የቅንጦት 3D ዘመናዊ ቪላ ቤት። 5 መኝታ ክፍሎች፣ ዘመናዊ ሳሎን፣ የመዋኛ ገንዳ እና የመኪና ማቆሚያ ያለው። ወደ ጎን ስክሮል በማድረግ የተለያዩ የ3D ዲዛይኖችን ይመልከቱ።",
+    specs: [
+      "500 ካሬ ሜትር ሙሉ ይዞታ",
+      "5 ዘመናዊ መኝታ ክፍሎች እና 6 መታጠቢያ",
+      "የግል መዋኛ ገንዳ (Swimming Pool) እና ጋራዥ",
+      "ሙሉ የቤት እቃ የተሟላለት (3D Smart Home)",
+    ],
+    slides: [
+      {
+        image: "https://unsplash.com",
+        label: "ዲዛይን 1፡ ውጫዊ 3D ቪላ",
+      },
+      {
+        image: "https://unsplash.com",
+        label: "ዲዛይን 2፡ የመዋኛ ገንዳ እይታ",
+      },
+      {
+        image: "https://unsplash.com",
+        label: "ዲዛይን 3፡ የውስጥ 3D ሳሎን",
+      },
+    ],
+    views: 14250,
+    likes: 1840,
+    seedBids: [
+      ["ዳዊት መ.", 601],
+      ["ሰላም ታ.", 605],
+    ],
+    seedComments: [
+      ["ብሩክ አ.", "ይህ 3D ቤት በጣም ያምራል! ተጫርቻለሁ"],
+      ["ሜሮን ክ.", "ዲዛይኖቹ ልዩ ናቸው ባትሪው ቶሎ ቢሞላ!"],
+    ],
+  },
+  {
+    id: "luxury-3d-car",
+    name: "የቅንጦት 3D ስፖርት መኪና (Luxury SUV 2026)",
+    tagline: "V8 Turbo · ሙሉ 3D ዘመናዊ ዲዛይን",
+    description:
+      "የቅርብ ጊዜ ሞዴል የሆነ የቅንጦት 3D ስፖርት መኪና። ባለ ሙሉ ፓኖራሚክ ጣሪያ፣ ዘመናዊ የቆዳ ሳሎን እና ከፍተኛ ፍጥነት ያለው። ወደ ጎን ስክሮል በማድረግ የተለያዩ የ3D ዲዛይኖችን ይመልከቱ።",
+    specs: [
+      "2026 ሞዴል V8 Twin-Turbo ሞተር",
+      "ሙሉ የቆዳ 3D የውስጥ ሳሎን (Luxury Interior)",
+      "አውቶማቲክ የመንዳት ቴክኖሎጂ (Smart Autopilot)",
+      "0 ኪሎ ሜትር የነዳ አዲስ መኪና",
+    ],
+    slides: [
+      {
+        image: "https://unsplash.com",
+        label: "ዲዛይን 1፡ የፊት 3D ስፖርት",
+      },
+      {
+        image: "https://unsplash.com",
+        label: "ዲዛይን 2፡ የጎን 3D ቅርጽ",
+      },
+      {
+        image: "https://unsplash.com",
+        label: "ዲዛይን 3፡ የውስጥ 3D ሳሎን",
+      },
+    ],
+    views: 11890,
+    likes: 1520,
+    seedBids: [
+      ["ዮሐንስ በ.", 602],
+      ["ሄለን ግ.", 610],
+    ],
+    seedComments: [
+      ["ሳሙኤል ተ.", "የመኪናው 3D ዲዛይን እብድ ነው!"],
+      ["ፍቅርተ ዘ.", "602 ብር አስገብቼ ሞክሬዋለሁ"],
+    ],
+  }
+);
+PRODUCT_IDS.push("luxury-3d-villa", "luxury-3d-car");
