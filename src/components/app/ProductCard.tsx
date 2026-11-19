@@ -44,9 +44,9 @@ export function ProductCard({ product: p, eager }: { product: Product; eager?: b
     <article className="overflow-hidden rounded-[1.75rem] border bg-surface shadow-card">
       <div className="relative">
         <ImageSlider slides={p.slides} alt={p.name} eager={eager} />
-        <span className="glass absolute left-3 top-3 rounded-full border px-2.5 py-1 text-[10px] font-semibold text-primary-glow">
-          AI ልጥፍ
-        </span>
+            
+
+        
       </div>
 
       <div className="space-y-4 p-4">
