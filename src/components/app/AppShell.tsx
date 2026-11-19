@@ -212,12 +212,7 @@ if (typeof window !== "undefined") {
         <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;">
           <a href="/bids" style="padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.05);color:#fff;text-decoration:none;">📜 Bid History</a>
           <a href="/profile" style="padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.05);color:#fff;text-decoration:none;">👤 My Profile</a>
-          <details style="padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.05);">
-            <summary style="cursor:pointer;color:#fbbf24;font-weight:bold;">🤖 AI እርዳታ (24/7)</summary>
-            <p style="margin-top:8px;font-size:11px;color:#cbd5e1;line-height:1.5;">
-              የቴሌብር ክፍያ ችግር ካጋጠመዎት የትራንዛክሽን ቁጥርዎን በዋሌት ገጽ ላይ ያስገቡ፤ በ5 ደቂቃ ውስጥ ይስተካከላል። ለማንኛውም ጥያቄ 24/7 ዝግጁ ነን።
-            </p>
-          </details>
+        
           <details style="padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.05);">
             <summary style="cursor:pointer;color:#fff;">❓ የድርጅቱ FAQ</summary>
             <p style="margin-top:8px;font-size:11px;color:#cbd5e1;line-height:1.5;">
