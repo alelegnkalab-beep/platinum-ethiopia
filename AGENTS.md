@@ -35,4 +35,4 @@ use the editor.
 - Shared shell (header, 3-dots menu, bottom bar) lives in `src/components/app/AppShell.tsx`, mounted from `__root.tsx`.
 - Every client UI dependency is listed in `optimizeDeps.include` in `vite.config.ts`; add new ones there — on-demand re-bundling mid-session loads two React copies and blanks the preview.
 - Direct ETB bids go through Payo (payment.et): `createPayoOrder` server fn (`src/lib/payo.functions.ts`) creates a pending `payo_bids` row + Payo order; `/api/public/payo-webhook` verifies `x-pygate-signature` HMAC (or `x-api-key`) with `PAYO_API_KEY` and activates the bid — server routes/functions instead of Supabase Edge Functions, per the TanStack stack.
-- `payo_bids` is written only server-side (service role); browsers read safe columns only (phone and payment link are not granted to anon).
+- `payo_bids` and `payo_deposits` are read and written only server-side (service role, no browser policies); browsers get bid status via the `getPayoBidStatuses` server fn — keeps phones, amounts and payment links private.

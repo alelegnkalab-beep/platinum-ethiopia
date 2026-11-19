@@ -4,9 +4,8 @@ import { BadgeCheck, Clock, ExternalLink, Landmark, Loader2, Receipt, XCircle } 
 import { toast } from "sonner";
 import type { Product } from "@/lib/products";
 import { CASH_BID_STEP_ETB, PAYO_LINK_MINUTES, isAuctionEnded, minNextCashBid } from "@/lib/rules";
-import { createPayoOrder } from "@/lib/payo.functions";
+import { createPayoOrder, getPayoBidStatuses } from "@/lib/payo.functions";
 import { useNow, useStore } from "@/lib/store";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -39,6 +38,7 @@ export function PayoBidBox({ product: p, open }: { product: Product; open: boole
   const { signedIn, account } = useStore();
   const now = useNow(5_000);
   const create = useServerFn(createPayoOrder);
+  const fetchStatuses = useServerFn(getPayoBidStatuses);
   const [verified, setVerified] = useState<PublicBid[]>([]);
   const [mine, setMine] = useState<MyBid[]>([]);
   const [amount, setAmount] = useState("");
@@ -48,22 +48,16 @@ export function PayoBidBox({ product: p, open }: { product: Product; open: boole
   const myHere = mine.filter((b) => b.productId === p.id);
   const ended = now !== null && isAuctionEnded(p.postedAt, now);
 
+  // Other bidders' names and amounts are private; the browser no longer reads the bids table directly.
   const loadVerified = useCallback(async () => {
-    const { data } = await supabase
-      .from("payo_bids")
-      .select("id, bidder_name, amount_etb, verified_at")
-      .eq("product_id", p.id)
-      .eq("status", "active")
-      .order("amount_etb", { ascending: false })
-      .limit(6);
-    if (data) setVerified(data as PublicBid[]);
-  }, [p.id]);
+    setVerified([]);
+  }, []);
 
   const refreshMine = useCallback(async () => {
     const list = readMine();
     const pending = list.filter((b) => b.status === "pending").map((b) => b.id);
     if (pending.length) {
-      const { data } = await supabase.from("payo_bids").select("id, status").in("id", pending);
+      const data = await fetchStatuses({ data: { ids: pending } }).catch(() => []);
       const byId = new Map((data ?? []).map((r) => [r.id, r.status as Status]));
       const next = list.map((b) => (byId.has(b.id) ? { ...b, status: byId.get(b.id)! } : b));
       if (next.some((b, i) => b.status !== list[i]?.status)) {
@@ -75,7 +69,7 @@ export function PayoBidBox({ product: p, open }: { product: Product; open: boole
       }
       setMine(next);
     } else setMine(list);
-  }, [loadVerified]);
+  }, [loadVerified, fetchStatuses]);
 
   useEffect(() => {
     if (!open) return undefined;
