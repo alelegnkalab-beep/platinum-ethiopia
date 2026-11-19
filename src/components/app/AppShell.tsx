@@ -124,42 +124,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           ))}
         </ul>
       </nav>
-            {/* 24/7 ብልህ AI ረዳት (Smart AI Support Assistant) */}
-      <details className="fixed bottom-20 right-4 z-50 group">
-        <summary className="list-none cursor-pointer flex items-center gap-2 px-4 py-2.5 rounded-full bg-amber-500 text-black font-bold text-xs shadow-lg hover:bg-amber-400">
-          <span>🤖 AI ረዳት (24/7)</span>
-        </summary>
-        <div className="mt-2 w-80 p-4 rounded-2xl bg-slate-900 border border-amber-500/40 shadow-2xl text-xs text-slate-200 space-y-3">
-          <div className="flex items-center justify-between border-b border-white/10 pb-2">
-            <span className="font-bold text-amber-400">ፕላቲኒየም AI ረዳት</span>
-            <span className="text-[10px] text-emerald-400">● መስመር ላይ (24/7)</span>
-          </div>
-          <p className="text-slate-300 leading-relaxed">
-            ሰላም! ስለ ጨረታው፣ ስለ ቴሌብር ክፍያ ችግር ወይም ስለ ፕላቲኒየም ቶከን አክሲዮን ዝርዝር መረጃ ከፈለጉ ከታች ይምረጡ፦
-          </p>
-          <div className="space-y-1.5">
-            <details className="p-2 rounded-lg bg-white/5">
-              <summary className="cursor-pointer font-semibold text-amber-300">💳 የክፍያ ችግር ካጋጠመዎት?</summary>
-              <p className="mt-1 text-slate-300 leading-relaxed">
-                በቴሌብር ከፍለው ሂሳብዎ ካልገባ የትራንዛክሽን ቁጥርዎን (Transaction ID) በዋሌት (Wallet) ገጽ ላይ ያስገቡ ወይም በቀጥታ ለድጋፍ ሰጪ ቡድናችን ይላኩ፤ በ5 ደቂቃ ውስጥ ይስተካከላል።
-              </p>
-            </details>
-            <details className="p-2 rounded-lg bg-white/5">
-              <summary className="cursor-pointer font-semibold text-amber-300">🏆 ጨረታው እንዴት ይሰራል?</summary>
-              <p className="mt-1 text-slate-300 leading-relaxed">
-                በነጻ በሚያገኙት 100 ነጥብ ወይም በስፒን በሰበሰቡት ነጥብ በየቀኑ ጠዋት 1:00 ላይ በሚወጡ ኦሪጅናል ምርቶች ላይ መጫረት ይችላሉ። ከፍተኛ ዋጋ ያቀረበ ሰው አሸናፊ ይሆናል።
-              </p>
-            </details>
-            <details className="p-2 rounded-lg bg-white/5">
-              <summary className="cursor-pointer font-semibold text-amber-300">🚀 የፕላቲኒየም ቶከን አክሲዮን ምንድን ነው?</summary>
-              <p className="mt-1 text-slate-300 leading-relaxed">
-                በኤርድሮፕ (AirDrop) ገጽ ላይ ከ 1,000 ብር ጀምሮ አክሲዮን ሲገዙ የፕላቲኒየም ቶከን ቀዳሚ ባለድርሻ ይሆናሉ። ቶከኑ በይፋ ላውንች ሲደረግ ልዩ ትርፍ እና የጨረታ ቅድሚያ ያገኛሉ።
-              </p>
-            </details>
-          </div>
-        </div>
-      </details>
-
+          
     </div>
   );
 }
