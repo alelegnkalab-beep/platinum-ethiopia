@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { Eye, Heart, Info, MessageCircle, Send, Share2, Trophy, Users } from "lucide-react";
 import { toast } from "sonner";
 import type { Product } from "@/lib/products";
@@ -23,6 +25,9 @@ export function ProductCard({ product: p, eager }: { product: Product; eager?: b
   const [open, setOpen] = useState(false);
   const [pop, setPop] = useState(false);
   const top = highestBid(p.bids);
+    const navigate = useNavigate();
+  const [bidAmount, setBidAmount] = useState(top + 5);
+
   const ended = now !== null && isAuctionEnded(p.postedAt, now);
   const winner = now !== null ? auctionWinner(p.postedAt, p.bids, now) : undefined;
 
@@ -88,39 +93,73 @@ export function ProductCard({ product: p, eager }: { product: Product; eager?: b
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
+              <div className="mt-3 space-y-2.5">
+        <div className="flex items-center gap-2 rounded-2xl border border-amber-500/40 bg-amber-500/10 p-1.5">
           <Button
+            type="button"
             variant="soft"
             size="icon"
-            aria-label="ላይክ"
-            aria-pressed={p.liked}
-            className="h-11 w-auto rounded-2xl px-3"
-            onClick={() => {
-              toggleLike(p.id);
-              setPop(true);
-              setTimeout(() => setPop(false), 350);
-            }}
+            className="size-11 shrink-0 rounded-xl text-lg font-extrabold"
+            onClick={() => setBidAmount((prev) => Math.max(top + 1, prev - 5))}
           >
-            <Heart className={cn(p.liked && "fill-like text-like", pop && "animate-pop")} />
-            <span className="text-xs">{fmt(p.likes)}</span>
+            -
           </Button>
           <Button
+            type="button"
+            variant="glow"
+            className="h-11 flex-1 rounded-xl text-sm font-extrabold"
+            onClick={() => navigate("/wallet")}
+          >
+            ክፈል / ጨርት ({fmt(bidAmount)} ብር)
+          </Button>
+          <Button
+            type="button"
             variant="soft"
             size="icon"
-            aria-label="አስተያየት"
-            aria-expanded={showComments}
-            className="size-11 rounded-2xl"
-            onClick={() => setShowComments((v) => !v)}
+            className="size-11 shrink-0 rounded-xl text-lg font-extrabold"
+            onClick={() => setBidAmount((prev) => prev + 5)}
           >
-            <MessageCircle />
-          </Button>
-          <Button variant="soft" size="icon" aria-label="አጋራ" className="size-11 rounded-2xl" onClick={share}>
-            <Share2 />
-          </Button>
-          <Button variant="glow" className="h-11 flex-1 rounded-2xl" onClick={() => setOpen(true)}>
-            <Info /> ዝርዝር እና ጨረታ
+            +
           </Button>
         </div>
+
+        <div className="flex items-center justify-between gap-2 pt-1">
+          <div className="flex items-center gap-2">
+            <Button
+              variant="soft"
+              size="icon"
+              aria-label="ላይክ"
+              aria-pressed={p.liked}
+              className="h-10 w-auto rounded-2xl px-3"
+              onClick={() => {
+                toggleLike(p.id);
+                setPop(true);
+                setTimeout(() => setPop(false), 300);
+              }}
+            >
+              <Heart className={cn(p.liked && "fill-rose-500 text-rose-500")} />
+              <span className="text-xs">{fmt(p.likes)}</span>
+            </Button>
+            <Button
+              variant="soft"
+              size="icon"
+              aria-label="አስተያየት"
+              aria-expanded={showComments}
+              className="size-10 rounded-2xl"
+              onClick={() => setShowComments((v) => !v)}
+            >
+              <MessageCircle />
+            </Button>
+            <Button variant="soft" size="icon" className="size-10 rounded-2xl" onClick={share}>
+              <Share2 />
+            </Button>
+          </div>
+          <Button variant="soft" className="h-10 rounded-2xl px-3 text-xs font-semibold" onClick={() => setOpen(true)}>
+            <Info className="mr-1 size-4" /> ዝርዝር
+          </Button>
+        </div>
+      </div>
+
 
         {showComments && (
           <div className="space-y-3 rounded-2xl border bg-background/40 p-3">
