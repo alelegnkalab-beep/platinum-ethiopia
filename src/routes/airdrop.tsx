@@ -281,3 +281,156 @@ function AirdropPage() {
                 isShare: false,
               })
             }
+            className="p-3 rounded-2xl bg-sky-500/15 border border-sky-400/40 hover:border-sky-300 text-center active:scale-95 transition"
+          >
+            <p className="text-sm font-extrabold text-white">200 PLT ቶከን</p>
+            <p className="text-xs text-sky-300 font-bold mt-0.5">
+              በ 2,000 ብር ግዛ
+            </p>
+          </button>
+        </div>
+      </div>
+
+      {/* 4. መንገድ 3፡ የድርጅቱን አክሲዮን በቀጥታ መግዛት + ግሪን ካርድ */}
+      <div className="p-5 rounded-3xl border-2 border-amber-400/60 bg-gradient-to-b from-amber-500/15 via-slate-900 to-black space-y-4 shadow-2xl">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="size-7 rounded-full bg-amber-400 text-slate-950 font-black text-xs flex items-center justify-center">
+              3
+            </span>
+            <h2 className="font-extrabold text-base text-white flex items-center gap-1.5">
+              <Building2 className="size-5 text-amber-400" /> የድርጅቱን አክሲዮን
+              መግዛት
+            </h2>
+          </div>
+          <span className="text-[11px] font-bold text-emerald-300 flex items-center gap-1">
+            <Award className="size-3.5" /> ግሪን ካርድ ያካትታል
+          </span>
+        </div>
+
+        <p className="text-xs text-slate-300 leading-relaxed">
+          የ<strong className="text-white">ፕላቲኒየም ኢትዮጵያ</strong> ባለድርሻ በመሆን
+          አክሲዮን ሲገዙ የፕላቲኒየም ቶከን (PLT) እና{" "}
+          <strong className="text-emerald-400">
+            የባለድርሻነት ግሪን ካርድ (Green Card)
+          </strong>{" "}
+          ወዲያውኑ ዳውንሎድ ማድረግ ይችላሉ።
+        </p>
+
+        <div className="grid grid-cols-3 gap-2">
+          {SHARE_PACKAGES.map((pkg) => (
+            <button
+              key={pkg.birr}
+              type="button"
+              onClick={() =>
+                setSelectedItem({
+                  title: `የድርጅት አክሲዮን (${pkg.badge})`,
+                  birr: pkg.birr,
+                  plt: pkg.plt,
+                  isShare: true,
+                })
+              }
+              className="flex flex-col items-center p-3 rounded-2xl bg-black/60 border border-amber-400/50 hover:border-amber-300 active:scale-95 transition text-center"
+            >
+              <span className="text-[10px] font-bold text-amber-300">
+                {pkg.badge}
+              </span>
+              <span className="text-sm font-black text-white mt-1">
+                {pkg.label}
+              </span>
+              <span className="text-xs font-extrabold text-emerald-400 mt-0.5">
+                {pkg.plt.toLocaleString()} PLT
+              </span>
+              <span className="mt-2 w-full py-1.5 rounded-xl bg-amber-400 text-slate-950 font-black text-[11px]">
+                አክሲዮን ግዛ
+              </span>
+            </button>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-2 text-[11px] text-slate-400 pt-1">
+          <ShieldCheck className="size-4 text-emerald-400 shrink-0" />
+          <span>100% ግልጽ የባለድርሻነት ምዝገባ እና ኦፊሴላዊ ግሪን ካርድ</span>
+        </div>
+      </div>
+
+      {/* 5. ክፍያ መፈጸሚያ እና ግሪን ካርድ ዳውንሎድ መስኮት (Popup) */}
+      {selectedItem && (
+        <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4">
+          <div className="w-full max-w-sm rounded-3xl bg-slate-900 border border-amber-400 p-5 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between">
+              <h4 className="font-extrabold text-white text-base flex items-center gap-1.5">
+                <Sparkles className="size-4 text-amber-400" />{" "}
+                {selectedItem.title}
+              </h4>
+              <button
+                type="button"
+                onClick={() => setSelectedItem(null)}
+                className="p-1 text-slate-400 hover:text-white"
+              >
+                <X className="size-5" />
+              </button>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-400/40 text-center">
+              <p className="text-xs text-slate-300">የሚከፍሉት እና የሚያገኙት</p>
+              <p className="text-xl font-black text-amber-400 mt-1">
+                {selectedItem.birr.toLocaleString()} ብር ={" "}
+                {selectedItem.plt.toLocaleString()} PLT
+              </p>
+            </div>
+
+            {selectedItem.isShare && (
+              <div className="p-3.5 rounded-2xl bg-emerald-950/70 border border-emerald-400/50 space-y-2.5">
+                <p className="text-xs font-bold text-emerald-300 flex items-center gap-1.5">
+                  <Award className="size-4" /> የባለድርሻነት ግሪን ካርድ (Green Card)
+                </p>
+                <input
+                  type="text"
+                  value={holderName}
+                  onChange={(e) => setHolderName(e.target.value)}
+                  placeholder="ሙሉ ስምዎን እዚህ ይጻፉ..."
+                  className="w-full px-3 py-2 rounded-xl bg-black/60 border border-emerald-500/40 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-emerald-400"
+                />
+                <button
+                  type="button"
+                  onClick={downloadGreenCard}
+                  className="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 active:scale-95 transition"
+                >
+                  <Download className="size-4" /> ግሪን ካርድ አውርድ (Download PNG)
+                </button>
+              </div>
+            )}
+
+            <div className="space-y-2 text-xs text-slate-300">
+              <p className="font-bold text-white">ክፍያ የሚፈጽሙበት አካውንት፦</p>
+              <div className="p-3 rounded-2xl bg-white/5 border border-white/10 space-y-1.5">
+                <p>
+                  📱 ቴሌብር (Telebirr):{" "}
+                  <span className="text-amber-300 font-extrabold">
+                    0900071005
+                  </span>
+                </p>
+                <p className="text-slate-400">
+                  ስም: Kalab Alelegn (Platinum Ethiopia)
+                </p>
+              </div>
+              <p className="text-amber-200/90 text-[11px] leading-relaxed">
+                ክፍያውን ከፈጸሙ በኋላ ደረሰኙን በቴሌግራም ሲልኩ የፕላቲኒየም ቶከንዎ ወዲያውኑ ወደ ዋሌትዎ
+                ይገባል።
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setSelectedItem(null)}
+              className="w-full py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs"
+            >
+              ዝጋ
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
