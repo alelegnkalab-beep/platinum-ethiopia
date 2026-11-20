@@ -1,14 +1,18 @@
-import iphoneNatural from "@/assets/iphone-natural.jpg";
-import iphoneBlue from "@/assets/iphone-blue.jpg";
-
+import iphoneWhite from "@/assets/iphone-white.jpg";
+import iphoneBlack from "@/assets/iphone-black.jpg";
+import iphoneGold from "@/assets/iphone-gold.jpg";
+import s24White from "@/assets/s24-white.jpg";
 import s24Black from "@/assets/s24-black.jpg";
-import s24Gray from "@/assets/s24-gray.jpg";
+import s24Gold from "@/assets/s24-gold.jpg";
+import macWhite from "@/assets/macbook-white.jpg";
 import macBlack from "@/assets/macbook-black.jpg";
-import macSilver from "@/assets/macbook-silver.jpg";
-import ps5Console from "@/assets/ps5-console.jpg";
-import ps5Controller from "@/assets/ps5-controller.jpg";
+import macGold from "@/assets/macbook-gold.jpg";
+import ps5White from "@/assets/ps5-console.jpg";
+import ps5Black from "@/assets/ps5-black.jpg";
+import ps5Gold from "@/assets/ps5-gold.jpg";
+import sonyWhite from "@/assets/sony-white.jpg";
 import sonyBlack from "@/assets/sony-black.jpg";
-import sonySilver from "@/assets/sony-silver.jpg";
+import sonyGold from "@/assets/sony-gold.jpg";
 
 export type Slide = { image: string; label: string; swatch: string };
 export type Bid = { id: string; user: string; amountEtb: number; at: number; mine?: boolean };
@@ -42,10 +46,10 @@ const SEED: SeedItem[] = [
       "አዲስ፣ ያልተከፈተ iPhone 15 Pro Max። A17 Pro ቺፕ፣ 48MP ካሜራ በ5x ቴሌፎቶ ዙም እና ቀላል የታይታኒየም አካል።",
     specs: ["6.7\" Super Retina XDR", "A17 Pro ቺፕ", "256GB ማከማቻ", "48MP + 5x ቴሌፎቶ", "USB‑C"],
     slides: [
-      { image: iphoneNatural, label: "Natural Titanium", swatch: "oklch(0.78 0.02 75)" },
-      { image: iphoneBlue, label: "Blue Titanium", swatch: "oklch(0.45 0.06 250)" },
-      
-    ],{ image: iphoneGold, label: "Gold Titanium" },
+      { image: iphoneWhite, label: "White", swatch: "#F8FAFC" },
+      { image: iphoneBlack, label: "Black", swatch: "#0F172A" },
+      { image: iphoneGold, label: "Gold", swatch: "#D4AF37" },
+    ],
     views: 2840,
     likes: 312,
     seedBids: [["አበበ ተ.", 50], ["ሰላም ገ.", 58], ["ዮናስ ም.", 66]],
@@ -59,8 +63,9 @@ const SEED: SeedItem[] = [
       "Galaxy S24 Ultra ከ Galaxy AI ጋር። 200MP ካሜራ፣ የተካተተ S Pen እና ጠንካራ የታይታኒየም ፍሬም።",
     specs: ["6.8\" QHD+ AMOLED", "Snapdragon 8 Gen 3", "512GB ማከማቻ", "200MP ካሜራ", "S Pen ተካቷል"],
     slides: [
-      { image: s24Black, label: "Titanium Black", swatch: "oklch(0.22 0.01 260)" },
-      { image: s24Gray, label: "Titanium Gray", swatch: "oklch(0.55 0.01 250)" },
+      { image: s24White, label: "White", swatch: "#F8FAFC" },
+      { image: s24Black, label: "Black", swatch: "#0F172A" },
+      { image: s24Gold, label: "Gold", swatch: "#D4AF37" },
     ],
     views: 1960,
     likes: 204,
@@ -75,8 +80,9 @@ const SEED: SeedItem[] = [
       "MacBook Pro 14 ኢንች በ M3 ቺፕ። እስከ 22 ሰዓት የሚቆይ ባትሪ እና Liquid Retina XDR ስክሪን።",
     specs: ["14.2\" Liquid Retina XDR", "Apple M3 ቺፕ", "16GB RAM", "512GB SSD", "እስከ 22 ሰዓት ባትሪ"],
     slides: [
-      { image: macBlack, label: "Space Black", swatch: "oklch(0.24 0.012 260)" },
-      { image: macSilver, label: "Silver", swatch: "oklch(0.88 0.005 250)" },
+      { image: macWhite, label: "White", swatch: "#F8FAFC" },
+      { image: macBlack, label: "Black", swatch: "#0F172A" },
+      { image: macGold, label: "Gold", swatch: "#D4AF37" },
     ],
     views: 1475,
     likes: 168,
@@ -91,8 +97,9 @@ const SEED: SeedItem[] = [
       "PS5 Slim ከ DualSense መቆጣጠሪያ ጋር። ፈጣን 1TB SSD፣ 4K ጨዋታ እና ቀጭን አዲስ ዲዛይን።",
     specs: ["1TB SSD", "4K እስከ 120fps", "Disc Drive", "DualSense ተካቷል", "Ray tracing"],
     slides: [
-      { image: ps5Console, label: "Console", swatch: "oklch(0.95 0.005 250)" },
-      { image: ps5Controller, label: "DualSense Bundle", swatch: "oklch(0.3 0.02 260)" },
+      { image: ps5White, label: "White", swatch: "#F8FAFC" },
+      { image: ps5Black, label: "Black", swatch: "#0F172A" },
+      { image: ps5Gold, label: "Gold", swatch: "#D4AF37" },
     ],
     views: 2210,
     likes: 275,
@@ -107,8 +114,9 @@ const SEED: SeedItem[] = [
       "በኢንዱስትሪው ቀዳሚ የድምፅ መከላከያ (ANC) ያለው Sony WH-1000XM5። እስከ 30 ሰዓት ባትሪ እና ግልጽ ጥሪዎች።",
     specs: ["Industry-leading ANC", "30 ሰዓት ባትሪ", "ፈጣን ቻርጅ 3 ደቂቃ = 3 ሰዓት", "Multipoint Bluetooth", "LDAC Hi‑Res"],
     slides: [
-      { image: sonyBlack, label: "Black", swatch: "oklch(0.22 0.01 260)" },
-      { image: sonySilver, label: "Platinum Silver", swatch: "oklch(0.86 0.006 250)" },
+      { image: sonyWhite, label: "White", swatch: "#F8FAFC" },
+      { image: sonyBlack, label: "Black", swatch: "#0F172A" },
+      { image: sonyGold, label: "Gold", swatch: "#D4AF37" },
     ],
     views: 980,
     likes: 121,
@@ -137,4 +145,5 @@ export function seedProducts(postedAt: number): Product[] {
   }));
 }
 
-export const PRODUCT_IDS = SEED.map((p) => p.id);
+/** Ids of the auction items, used by the server to reject bids on unknown products. */
+export const PRODUCT_IDS = SEED.map((p) => p.id) as [string, ...string[]];

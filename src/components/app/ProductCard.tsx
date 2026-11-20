@@ -26,8 +26,9 @@ export function ProductCard({ product: p, eager }: { product: Product; eager?: b
   const [open, setOpen] = useState(false);
   const [pop, setPop] = useState(false);
   const top = highestBid(p.bids);
-    const navigate = useNavigate();
-  const [bidAmount, setBidAmount] = useState(top + 5);
+  const topAmount = top?.amountEtb ?? START_PRICE_ETB;
+  const navigate = useNavigate();
+  const [bidAmount, setBidAmount] = useState<number>(topAmount + 5);
 
   const ended = now !== null && isAuctionEnded(p.postedAt, now);
   const winner = now !== null ? auctionWinner(p.postedAt, p.bids, now) : undefined;
@@ -101,7 +102,7 @@ export function ProductCard({ product: p, eager }: { product: Product; eager?: b
             variant="soft"
             size="icon"
             className="size-11 shrink-0 rounded-xl text-lg font-extrabold"
-            onClick={() => setBidAmount((prev) => Math.max(top + 1, prev - 5))}
+            onClick={() => setBidAmount((prev: number) => Math.max(topAmount + 1, prev - 5))}
           >
             -
           </Button>
@@ -119,7 +120,7 @@ export function ProductCard({ product: p, eager }: { product: Product; eager?: b
             variant="soft"
             size="icon"
             className="size-11 shrink-0 rounded-xl text-lg font-extrabold"
-            onClick={() => setBidAmount((prev) => prev + 5)}
+            onClick={() => setBidAmount((prev: number) => prev + 5)}
           >
             +
           </Button>
