@@ -250,3 +250,104 @@ export const ApartmentAuctionCard = () => {
                   <div>
                     <span className="text-slate-400 block text-[11px]">የቤቱ ስፋት</span>
                     <strong className="text-white">165 ካሬ ሜትር</strong>
+                  </div>
+                </div>
+                <div className="bg-slate-900/90 border border-slate-800 p-2.5 rounded-xl flex items-center gap-2.5">
+                  <BedDouble className="w-4 h-4 text-amber-400 shrink-0" />
+                  <div>
+                    <span className="text-slate-400 block text-[11px]">መኝታ ክፍል</span>
+                    <strong className="text-white">3 ሰፊ መኝታዎች</strong>
+                  </div>
+                </div>
+                <div className="bg-slate-900/90 border border-slate-800 p-2.5 rounded-xl flex items-center gap-2.5">
+                  <Bath className="w-4 h-4 text-amber-400 shrink-0" />
+                  <div>
+                    <span className="text-slate-400 block text-[11px]">መታጠቢያ ቤት</span>
+                    <strong className="text-white">2 ዘመናዊ ባኞ ቤት</strong>
+                  </div>
+                </div>
+                <div className="bg-slate-900/90 border border-slate-800 p-2.5 rounded-xl flex items-center gap-2.5">
+                  <Building2 className="w-4 h-4 text-amber-400 shrink-0" />
+                  <div>
+                    <span className="text-slate-400 block text-[11px]">ወለል እና ሊፍት</span>
+                    <strong className="text-white">5ኛ ፎቅ (ባለ 2 ሊፍት)</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-slate-900/70 border border-slate-800 p-3 rounded-xl text-xs text-slate-300 leading-relaxed">
+                <p className="font-bold text-white mb-1">ተጨማሪ መገልገያዎች፡</p>
+                <ul className="list-disc list-inside space-y-1 text-slate-400">
+                  <li>ዘመናዊ የተሟላ ኪችን (Modern Kitchen)</li>
+                  <li>የከርሰ ምድር ውሃ እና 24 ሰዓት ጀነሬተር</li>
+                  <li>የመኪና ማቆሚያ (Underground Parking)</li>
+                  <li>24/7 የደህንነት ካሜራ እና ጥበቃ</li>
+                </ul>
+              </div>
+            </div>
+
+            {!isCompleted && (
+              <form
+                onSubmit={handlePlaceBid}
+                className="space-y-3 pt-3 border-t border-slate-800"
+              >
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-slate-400">አሁን ያለው ከፍተኛ ዋጋ፡</span>
+                  <span className="text-amber-400 font-bold text-sm">
+                    {highestBid.amount.toLocaleString()} ብር
+                  </span>
+                </div>
+
+                <div>
+                  <label className="text-xs text-slate-300 block mb-1">ሙሉ ስም</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="ሙሉ ስምዎን ያስገቡ"
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs text-slate-300 block mb-1">ስልክ ቁጥር</label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="09..."
+                    value={userPhone}
+                    onChange={(e) => setUserPhone(e.target.value)}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs text-slate-300 block mb-1">
+                    የሚጫረቱበት ዋጋ (ከ {highestBid.amount + 1} ብር በላይ)
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min={highestBid.amount + 1}
+                    placeholder={`${highestBid.amount + 100}`}
+                    value={newBidAmount}
+                    onChange={(e) => setNewBidAmount(e.target.value)}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-xl text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition"
+                >
+                  ጨረታውን አሁን አስገባ
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
