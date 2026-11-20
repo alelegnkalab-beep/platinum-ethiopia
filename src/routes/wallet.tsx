@@ -77,7 +77,7 @@ function WalletPage() {
         <Button
           variant="glow"
           size="xl"
-          className="w-full font-bold"
+          className="w-full min-w-0 px-2 text-sm font-bold"
           onClick={() => setDepositOpen(!depositOpen)}
         >
           <ArrowDownRight className="mr-1 size-5" /> ዲፖዚት (Deposit)
@@ -85,7 +85,7 @@ function WalletPage() {
         <Button
           variant="outline"
           size="xl"
-          className="w-full font-bold"
+          className="w-full min-w-0 px-2 text-sm font-bold"
           disabled={!signedIn}
           onClick={() => {
             if (!unlocked && etbBalance <= 0) {
