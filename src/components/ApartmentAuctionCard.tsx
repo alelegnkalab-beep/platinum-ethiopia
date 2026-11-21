@@ -1,4 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import apartmentPhoto from '@/assets/house-penthouse.jpg';
+import { maskPhone } from '@/lib/rules';
+import { useStore } from '@/lib/store';
 import {
   BatteryCharging,
   Trophy,
@@ -16,6 +20,8 @@ import {
   Building2,
   X
 } from 'lucide-react';
+
+const APARTMENT_STORAGE_KEY = "platinum-ethiopia:apartment-v1";
 
 interface Bid {
   fullName: string;
@@ -41,6 +47,50 @@ export const ApartmentAuctionCard = () => {
   const [userName, setUserName] = useState<string>("");
   const [userPhone, setUserPhone] = useState<string>("");
   const [newBidAmount, setNewBidAmount] = useState<string>("");
+  const [loaded, setLoaded] = useState<boolean>(false);
+  const { account } = useStore();
+
+  // ጨረታው ገጹ ሲታደስ እንዳይጠፋ በዚህ ስልክ ላይ ይቀመጣል
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(APARTMENT_STORAGE_KEY);
+      if (raw) {
+        const saved = JSON.parse(raw) as Partial<{ participantsCount: number; highestBid: Bid; likes: number; isLiked: boolean }>;
+        if (typeof saved.participantsCount === "number") setParticipantsCount(saved.participantsCount);
+        if (saved.highestBid && typeof saved.highestBid.amount === "number") setHighestBid(saved.highestBid);
+        if (typeof saved.likes === "number") setLikes(saved.likes);
+        if (typeof saved.isLiked === "boolean") setIsLiked(saved.isLiked);
+      }
+    } catch {
+      /* ignore corrupt storage */
+    }
+    setLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (!loaded) return;
+    localStorage.setItem(APARTMENT_STORAGE_KEY, JSON.stringify({ participantsCount, highestBid, likes, isLiked }));
+  }, [loaded, participantsCount, highestBid, likes, isLiked]);
+
+  useEffect(() => {
+    if (!account) return;
+    setUserName((v) => v || account.name);
+    setUserPhone((v) => v || account.phone);
+  }, [account]);
+
+  const share = async () => {
+    const url = typeof window !== "undefined" ? window.location.origin : "";
+    const text = "ለግዠሪ አፓርታማ ጨረታ በፕላቲኒየም ኢትዮጵያ!";
+    try {
+      if (navigator.share) await navigator.share({ title: "ፕላቲኒየም ኢትዮጵያ", text, url });
+      else {
+        await navigator.clipboard.writeText(`${text} ${url}`);
+        toast.success("ሊንኩ ተቀድቷል");
+      }
+    } catch {
+      /* share cancelled */
+    }
+  };
 
   const batteryPercentage = Math.min(
     Math.round((participantsCount / SECRET_TARGET_USERS) * 100),
@@ -60,25 +110,31 @@ export const ApartmentAuctionCard = () => {
 
     if (isCompleted) return;
     if (bidValue < STARTING_PRICE || bidValue <= highestBid.amount) {
-      alert(`እባክዎ አሁን ካለው ከፍተኛ ጨረታ (${highestBid.amount.toLocaleString()} ብር) በላይ ያስገቡ!`);
+      toast.error(`እባክዎ አሁን ካለው ከፍተኛ ጨረታ (${highestBid.amount.toLocaleString()} ብር) በላይ ያስገቡ!`);
+      return;
+    }
+    if (!/^(\+251|0)[79]\d{8}$/.test(userPhone.replace(/\s/g, ""))) {
+      toast.error("ትክክለኛ ስልክ ቁጥር ያስገቡ (ለምሳሌ 0911223344)");
       return;
     }
 
     setParticipantsCount((prev) => Math.min(prev + 1, SECRET_TARGET_USERS));
     setHighestBid({
-      fullName: userName,
-      phone: userPhone,
+      fullName: userName.trim(),
+      phone: userPhone.replace(/\s/g, ""),
       amount: bidValue,
     });
     setNewBidAmount("");
     setShowDetailsModal(false);
+    toast.success(`ጨረታዎ (${bidValue.toLocaleString()} ብር) ተመዝግቧል!`);
   };
 
   return (
     <div className="bg-[#0B1221] border border-slate-800/90 rounded-2xl overflow-hidden shadow-2xl text-white my-4">
       <div className="relative h-56 w-full bg-slate-900">
         <img
-          src="https://unsplash.com"
+          src={apartmentPhoto}
+          loading="lazy"
           alt="Luxury Apartment"
           className="w-full h-full object-cover"
         />
@@ -162,7 +218,7 @@ export const ApartmentAuctionCard = () => {
               </p>
               <p className="flex justify-between">
                 <span className="text-slate-400">ስልክ ቁጥር፡</span>
-                <strong className="text-white">{highestBid.phone}</strong>
+                <strong className="text-white">{highestBid.phone.includes("*") ? highestBid.phone : maskPhone(highestBid.phone)}</strong>
               </p>
               <p className="flex justify-between">
                 <span className="text-slate-400">ያሸነፈበት ከፍተኛ ዋጋ፡</span>
@@ -202,7 +258,12 @@ export const ApartmentAuctionCard = () => {
               />
               <span>{likes}</span>
             </button>
-            <button className="bg-slate-800/80 hover:bg-slate-800 p-2.5 rounded-xl transition">
+            <button
+              type="button"
+              aria-label="አጋራ"
+              onClick={share}
+              className="bg-slate-800/80 hover:bg-slate-800 p-2.5 rounded-xl transition"
+            >
               <Share2 className="w-4 h-4 text-slate-300" />
             </button>
           </div>
@@ -329,7 +390,6 @@ export const ApartmentAuctionCard = () => {
                   <input
                     type="number"
                     required
-                    min={highestBid.amount + 1}
                     placeholder={`${highestBid.amount + 100}`}
                     value={newBidAmount}
                     onChange={(e) => setNewBidAmount(e.target.value)}

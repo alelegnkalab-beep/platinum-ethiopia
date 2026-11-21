@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowDownRight, ArrowUpRight, Clock, Lock, Wallet } from "lucide-react";
 import { toast } from "sonner";
 import { JoinBanner, PageTitle, Panel } from "@/components/app/bits";
@@ -17,6 +17,7 @@ export const Route = createFileRoute("/wallet")({
   component: WalletPage,
 });
 
+const WALLET_EXTRA_KEY = "platinum-ethiopia:wallet-extra-v1";
 const METHODS = ["ቴሌብር", "ሲቢኢ ብር", "የኢትዮጵያ ንግድ ባንክ", "አቢሲኒያ ባንክ"];
 
 function WalletPage() {
@@ -30,6 +31,22 @@ function WalletPage() {
     const [depositOpen, setDepositOpen] = useState(false);
   const [etbBalance, setEtbBalance] = useState(0);
   const [convertedPts, setConvertedPts] = useState(0);
+  const [walletLoaded, setWalletLoaded] = useState(false);
+
+  // የአካውንት ብር እና የተቀየሩ ነጥቦች ገጹ ሲታደስ እንዳይጠፉ ይቀመጣሉ
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(WALLET_EXTRA_KEY) || "{}") as { etb?: number; converted?: number };
+      if (typeof saved.etb === "number") setEtbBalance(saved.etb);
+      if (typeof saved.converted === "number") setConvertedPts(saved.converted);
+    } catch {
+      /* ignore corrupt storage */
+    }
+    setWalletLoaded(true);
+  }, []);
+  useEffect(() => {
+    if (walletLoaded) localStorage.setItem(WALLET_EXTRA_KEY, JSON.stringify({ etb: etbBalance, converted: convertedPts }));
+  }, [walletLoaded, etbBalance, convertedPts]);
   const availablePts = Math.max(0, balance - convertedPts);
 
 

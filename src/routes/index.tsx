@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Flame } from "lucide-react";
 import { AiBanner } from "@/components/app/AiBanner";
-import { JoinBanner } from "@/components/app/JoinBanner";
+import { JoinBanner } from "@/components/app/bits";
 import { ProductCard } from "@/components/app/ProductCard";
 import { useStore } from "@/lib/store";
 import { pageHead } from "@/lib/seo";
@@ -32,7 +32,7 @@ function Index() {
       </div>
       <div className="space-y-6">
         {products.map((p, i) => (
-          <ProductCard key={p.id} product={p} index={i} />
+          <ProductCard key={p.id} product={p} eager={i === 0} />
         ))}
         <ApartmentAuctionCard />
       </div>
