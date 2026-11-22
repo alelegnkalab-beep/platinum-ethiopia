@@ -14,6 +14,109 @@ export type Database = {
   }
   public: {
     Tables: {
+      apartment_auctions: {
+        Row: {
+          created_at: string
+          ended_at: string | null
+          ends_at: string | null
+          id: string
+          start_price_etb: number
+          status: string
+          target_bids: number
+          title: string
+          updated_at: string
+          winner_bid_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          ended_at?: string | null
+          ends_at?: string | null
+          id: string
+          start_price_etb: number
+          status?: string
+          target_bids?: number
+          title: string
+          updated_at?: string
+          winner_bid_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          ended_at?: string | null
+          ends_at?: string | null
+          id?: string
+          start_price_etb?: number
+          status?: string
+          target_bids?: number
+          title?: string
+          updated_at?: string
+          winner_bid_id?: string | null
+        }
+        Relationships: []
+      }
+      apartment_bid_contacts: {
+        Row: {
+          bid_id: string
+          created_at: string
+          full_name: string
+          phone: string
+        }
+        Insert: {
+          bid_id: string
+          created_at?: string
+          full_name: string
+          phone: string
+        }
+        Update: {
+          bid_id?: string
+          created_at?: string
+          full_name?: string
+          phone?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "apartment_bid_contacts_bid_id_fkey"
+            columns: ["bid_id"]
+            isOneToOne: true
+            referencedRelation: "apartment_bids"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      apartment_bids: {
+        Row: {
+          amount_etb: number
+          auction_id: string
+          bidder_label: string
+          created_at: string
+          id: string
+          phone_masked: string
+        }
+        Insert: {
+          amount_etb: number
+          auction_id: string
+          bidder_label: string
+          created_at?: string
+          id?: string
+          phone_masked: string
+        }
+        Update: {
+          amount_etb?: number
+          auction_id?: string
+          bidder_label?: string
+          created_at?: string
+          id?: string
+          phone_masked?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "apartment_bids_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "apartment_auctions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payo_bids: {
         Row: {
           amount_etb: number
@@ -100,7 +203,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      finalize_apartment_auction: {
+        Args: { p_auction_id: string }
+        Returns: undefined
+      }
+      place_apartment_bid: {
+        Args: {
+          p_amount: number
+          p_auction_id: string
+          p_cooldown_seconds: number
+          p_full_name: string
+          p_label: string
+          p_phone: string
+          p_phone_masked: string
+        }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never
