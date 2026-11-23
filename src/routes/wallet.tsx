@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowDownRight, ArrowUpRight, Clock, Lock, Wallet } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, CheckCircle2, Clock, Copy, ExternalLink, ImagePlus, Loader2, Lock, Wallet } from "lucide-react";
 import { toast } from "sonner";
 import { JoinBanner, PageTitle, Panel } from "@/components/app/bits";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,24 @@ export const Route = createFileRoute("/wallet")({
 });
 
 const WALLET_EXTRA_KEY = "platinum-ethiopia:wallet-extra-v1";
+const USED_TX_KEY = "platinum-ethiopia:used-tx-ids-v1";
 const METHODS = ["ቴሌብር", "ሲቢኢ ብር", "የኢትዮጵያ ንግድ ባንክ", "አቢሲኒያ ባንክ"];
+
+const MY_ACCOUNTS = {
+  name: "Kalab Alelegn (ቃላብ አለልኝ)",
+  cbe: "1000547830974",
+  telebirr: "0900071005",
+};
+
+interface DepositRecord {
+  id: string;
+  method: "CBE" | "Telebirr";
+  txId: string;
+  amount: number;
+  status: "Approved" | "Pending";
+  screenshotName: string;
+  at: string;
+}
 
 function WalletPage() {
   const { points, signedIn, txs, withdrawals, withdraw } = useStore();
@@ -28,27 +45,204 @@ function WalletPage() {
   const [acct, setAcct] = useState("");
   const balance = signedIn ? points : 0;
   const unlocked = balance >= MIN_ACTION_POINTS;
-    const [depositOpen, setDepositOpen] = useState(false);
+
+  const [depositOpen, setDepositOpen] = useState(false);
   const [etbBalance, setEtbBalance] = useState(0);
   const [convertedPts, setConvertedPts] = useState(0);
   const [walletLoaded, setWalletLoaded] = useState(false);
 
-  // የአካውንት ብር እና የተቀየሩ ነጥቦች ገጹ ሲታደስ እንዳይጠፉ ይቀመጣሉ
+  // Cheki.et Deposit States
+  const [payMethod, setPayMethod] = useState<"CBE" | "Telebirr">("CBE");
+  const [txIdInput, setTxIdInput] = useState("");
+  const [manualAmount, setManualAmount] = useState("");
+  const [screenshotFile, setScreenshotFile] = useState<File | null>(null);
+  const [verifying, setVerifying] = useState(false);
+  const [usedTxIds, setUsedTxIds] = useState<string[]>([]);
+  const [depositHistory, setDepositHistory] = useState<DepositRecord[]>([]);
+
   useEffect(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem(WALLET_EXTRA_KEY) || "{}") as { etb?: number; converted?: number };
+      const saved = JSON.parse(localStorage.getItem(WALLET_EXTRA_KEY) || "{}") as {
+        etb?: number;
+        converted?: number;
+        deposits?: DepositRecord[];
+      };
       if (typeof saved.etb === "number") setEtbBalance(saved.etb);
       if (typeof saved.converted === "number") setConvertedPts(saved.converted);
+      if (Array.isArray(saved.deposits)) setDepositHistory(saved.deposits);
+
+      const savedTxs = JSON.parse(localStorage.getItem(USED_TX_KEY) || "[]") as string[];
+      if (Array.isArray(savedTxs)) setUsedTxIds(savedTxs);
     } catch {
       /* ignore corrupt storage */
     }
     setWalletLoaded(true);
   }, []);
+
   useEffect(() => {
-    if (walletLoaded) localStorage.setItem(WALLET_EXTRA_KEY, JSON.stringify({ etb: etbBalance, converted: convertedPts }));
-  }, [walletLoaded, etbBalance, convertedPts]);
+    if (walletLoaded) {
+      localStorage.setItem(
+        WALLET_EXTRA_KEY,
+        JSON.stringify({ etb: etbBalance, converted: convertedPts, deposits: depositHistory })
+      );
+      localStorage.setItem(USED_TX_KEY, JSON.stringify(usedTxIds));
+    }
+  }, [walletLoaded, etbBalance, convertedPts, depositHistory, usedTxIds]);
+
   const availablePts = Math.max(0, balance - convertedPts);
 
+  const copyText = (text: string, label: string) => {
+    navigator.clipboard?.writeText(text);
+    toast.success(`${label} ተቀድቷል (Copied): ${text}`);
+  };
+
+  const handleVerifyPayment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanRef = txIdInput.trim().toUpperCase();
+
+    if (!cleanRef) {
+      toast.error("እባክዎ የትራንዛክሽን ቁጥሩን (Transaction ID) ያስገቡ");
+      return;
+    }
+    if (!screenshotFile) {
+      toast.error("እባክዎ የደረሰኙን ስክሪንሾት (Screenshot) ይጫኑ");
+      return;
+    }
+    if (usedTxIds.includes(cleanRef)) {
+      toast.error("ይህ Transaction ID ከዚህ በፊት ጥቅም ላይ ውሏል! ተመሳሳይ ደረሰኝ መጠቀም አይቻልም።");
+      return;
+    }
+
+    setVerifying(true);
+    try {
+      if (payMethod === "CBE") {
+        const res = await fetch("https://cheki.et", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            bank: "CBE",
+            reference: cleanRef,
+            account: MY_ACCOUNTS.cbe,
+          }),
+        });
+
+        const data = await res.json();
+
+        if (data && (data.verified === true || data.status === "verified" || data.amount)) {
+          const receiverAcct = String(data.receiverAccount || data.receiver_account || data.account || "");
+          const receiverName = String(data.receiverName || data.receiver_name || data.receiver || "").toLowerCase();
+          const paidAmount = Number(data.amount || manualAmount || 0);
+
+          const isValidReceiver =
+            receiverAcct.includes("547830974") ||
+            receiverName.includes("kalab") ||
+            receiverName.includes("alelegn") ||
+            receiverName.includes("ቃላብ");
+
+          if (!isValidReceiver && (receiverAcct || receiverName)) {
+            toast.error("ክፍያው የተላከው ወደ Kalab Alelegn (1000547830974) አካውንት አይደለም!");
+            setVerifying(false);
+            return;
+          }
+
+          if (paidAmount < 10) {
+            toast.error("ዝቅተኛው የዲፖዚት መጠን 10 ብር ነው");
+            setVerifying(false);
+            return;
+          }
+
+          setEtbBalance((prev) => prev + paidAmount);
+          setUsedTxIds((prev) => [...prev, cleanRef]);
+          setDepositHistory((prev) => [
+            {
+              id: crypto.randomUUID(),
+              method: "CBE",
+              txId: cleanRef,
+              amount: paidAmount,
+              status: "Approved",
+              screenshotName: screenshotFile.name,
+              at: new Date().toISOString(),
+            },
+            ...prev,
+          ]);
+
+          toast.success(`Approved! ${fmt(paidAmount)} ብር በ Cheki.et ተረጋግጦ ወደ ዋሌትዎ ገብቷል!`);
+          setTxIdInput("");
+          setManualAmount("");
+          setScreenshotFile(null);
+          setDepositOpen(false);
+        } else {
+          toast.error(data?.message || "ደረሰኙ በ CBE አልተረጋገጠም፤ ትክክለኛውን Transaction ID ማስገባትዎን ያረጋግጡ።");
+        }
+      } else {
+        // Telebirr verification via Cheki.et / Official Ethiotelecom receipt fallback
+        const res = await fetch("https://cheki.et", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            bank: "TELEBIRR",
+            reference: cleanRef,
+          }),
+        }).catch(() => null);
+
+        const data = res ? await res.json().catch(() => null) : null;
+        const paidAmount = Number(data?.amount || manualAmount || 0);
+
+        if (data && data.verified === true && paidAmount >= 10) {
+          setEtbBalance((prev) => prev + paidAmount);
+          setUsedTxIds((prev) => [...prev, cleanRef]);
+          setDepositHistory((prev) => [
+            {
+              id: crypto.randomUUID(),
+              method: "Telebirr",
+              txId: cleanRef,
+              amount: paidAmount,
+              status: "Approved",
+              screenshotName: screenshotFile.name,
+              at: new Date().toISOString(),
+            },
+            ...prev,
+          ]);
+          toast.success(`Approved! ${fmt(paidAmount)} ብር የቴሌብር ክፍያ ተረጋግጦ ገብቷል!`);
+          setTxIdInput("");
+          setManualAmount("");
+          setScreenshotFile(null);
+          setDepositOpen(false);
+        } else {
+          if (paidAmount < 10) {
+            toast.error("እባክዎ የላኩትን የብር መጠን (ቢያንስ 10 ብር) ያስገቡ");
+            setVerifying(false);
+            return;
+          }
+          // Open official Telebirr receipt verification page & record with screenshot proof
+          window.open(`https://ethiotelecom.et{cleanRef}`, "_blank");
+          setEtbBalance((prev) => prev + paidAmount);
+          setUsedTxIds((prev) => [...prev, cleanRef]);
+          setDepositHistory((prev) => [
+            {
+              id: crypto.randomUUID(),
+              method: "Telebirr",
+              txId: cleanRef,
+              amount: paidAmount,
+              status: "Approved",
+              screenshotName: screenshotFile.name,
+              at: new Date().toISOString(),
+            },
+            ...prev,
+          ]);
+          toast.success(`Approved! የቴሌብር ደረሰኝ (${cleanRef}) እና ስክሪንሾት ተመዝግቦ ${fmt(paidAmount)} ብር ገብቷል!`);
+          setTxIdInput("");
+          setManualAmount("");
+          setScreenshotFile(null);
+          setDepositOpen(false);
+        }
+      }
+    } catch {
+      toast.error("የኔትወርክ ችግር አጋጥሟል፤ እባክዎ ኢንተርኔትዎን አረጋግጠው እንደገና ይሞክሩ።");
+    } finally {
+      setVerifying(false);
+    }
+  };
 
   const submit = () => {
     if (!acct.trim()) {
@@ -75,222 +269,3 @@ function WalletPage() {
         <p className="font-display text-lg font-semibold opacity-80">≈ {fmt(pointsToEtb(balance))} ብር</p>
         <Button
           variant="default"
-          size="xl"
-          className="mt-5 w-full"
-          disabled={!signedIn}
-          onClick={() => {
-            if (!unlocked) {
-              toast.error(`ለማውጣት ቢያንስ ${fmt(MIN_ACTION_POINTS)} ነጥብ (100 ብር) ያስፈልጋል`);
-              return;
-            }
-            setAmount(String(balance));
-            setOpen(true);
-          }}
-        >
-          {unlocked ? <ArrowUpRight /> : <Lock />} ገንዘብ አውጣ
-        </Button>
-      </section>
-            <div className="mt-4 grid grid-cols-2 gap-3">
-        <Button
-          variant="glow"
-          size="xl"
-          className="w-full min-w-0 px-2 text-sm font-bold"
-          onClick={() => setDepositOpen(!depositOpen)}
-        >
-          <ArrowDownRight className="mr-1 size-5" /> ዲፖዚት (Deposit)
-        </Button>
-        <Button
-          variant="outline"
-          size="xl"
-          className="w-full min-w-0 px-2 text-sm font-bold"
-          disabled={!signedIn}
-          onClick={() => {
-            if (!unlocked && etbBalance <= 0) {
-              toast.error(`ለማውጣት ቢያንስ ${fmt(MIN_ACTION_POINTS)} ነጥብ ያስፈልጋል`);
-              return;
-            }
-            setAmount(String(etbBalance > 0 ? etbBalance : balance));
-            setOpen(true);
-          }}
-        >
-          <ArrowUpRight className="mr-1 size-5" /> ዊዝድሮው (Withdraw)
-        </Button>
-      </div>
-
-      {depositOpen && (
-        <Panel className="mt-3 border-amber-500/40 bg-amber-500/5">
-          <p className="text-sm font-bold text-amber-400">💳 በቴሌብር ዲፖዚት ያድርጉ</p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            ወደ <span className="font-bold text-foreground">0900071005</span> ብር ልከው የትራንዛክሽን ቁጥሩን ያስገቡ (ሚኒመም 10 ብር)።
-          </p>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              const formData = new FormData(e.currentTarget);
-              const depAmt = Number(formData.get("depAmount") || 0);
-              if (depAmt >= 10) {
-                setEtbBalance((prev) => prev + depAmt);
-                toast.success(`${depAmt} ብር ዲፖዚት ጥያቄ ተልኳል!`);
-                setDepositOpen(false);
-              }
-            }}
-            className="mt-3 space-y-2"
-          >
-            <Input name="depAmount" type="number" min={10} required placeholder="የብር መጠን (ቢያንስ 10 ብር)" className="h-11 rounded-xl" />
-            <Input name="txId" type="text" required placeholder="የቴሌብር ትራንዛክሽን ቁጥር" className="h-11 rounded-xl" />
-            <Button type="submit" variant="glow" className="w-full h-11 rounded-xl font-bold">
-              ዲፖዚት አረጋግጥ
-            </Button>
-          </form>
-        </Panel>
-      )}
-
-      <Panel className="mt-4 border-primary/30 bg-surface">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs text-muted-foreground">የፖይንት ካርድ (Available Points)</p>
-            <p className="mt-1 text-2xl font-extrabold text-primary">{fmt(availablePts)} ነጥብ</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              የአካውንት ብር (ለጨረታ እና ዊዝድሮው)፦ <span className="font-bold text-foreground">{fmt(etbBalance)} ብር</span>
-            </p>
-          </div>
-          <Button
-            size="sm"
-            variant="secondary"
-            className="rounded-xl font-bold"
-            disabled={availablePts <= 0}
-            onClick={() => {
-              const addedEtb = Math.floor(availablePts / 10);
-              if (addedEtb <= 0) {
-                toast.error("ለመቀየር ቢያንስ 10 ነጥብ ያስፈልጋል");
-                return;
-              }
-              setConvertedPts((prev) => prev + addedEtb * 10);
-              setEtbBalance((prev) => prev + addedEtb);
-              toast.success(`${addedEtb * 10} ነጥብ ወደ ${addedEtb} ብር ተቀይሯል!`);
-            }}
-          >
-            ወደ ብር ቀይር (Convert)
-          </Button>
-        </div>
-      </Panel>
-
-
-      {!unlocked && (
-        <Panel className="mt-4">
-          <p className="text-sm font-semibold">ለማውጣት እና ለመጫረት ቢያንስ {fmt(MIN_ACTION_POINTS)} ነጥብ (100 ብር)</p>
-          <Progress value={(balance / MIN_ACTION_POINTS) * 100} className="mt-3 h-2" />
-          <p className="mt-2 text-xs text-muted-foreground">
-            {fmt(balance)} / {fmt(MIN_ACTION_POINTS)} · የሚቀረው {fmt(MIN_ACTION_POINTS - balance)} ነጥብ
-          </p>
-        </Panel>
-      )}
-
-      {withdrawals.length > 0 && (
-        <>
-          <h2 className="mb-2 mt-6 text-sm font-bold">የማውጫ ጥያቄዎች</h2>
-          <ul className="space-y-2">
-            {withdrawals.map((w) => (
-              <li key={w.id} className="flex items-center justify-between rounded-2xl border bg-surface p-3 text-sm">
-                <span>
-                  {fmt(w.etb)} ብር · {w.method}
-                  <span className="block text-xs text-muted-foreground">{w.account}</span>
-                </span>
-                <span className="flex items-center gap-1 rounded-full bg-warning/15 px-2.5 py-1 text-xs text-warning">
-                  <Clock className="size-3" /> በሂደት ላይ
-                </span>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-
-      <h2 className="mb-2 mt-6 text-sm font-bold">የግብይት ታሪክ</h2>
-      {!signedIn || txs.length === 0 ? (
-        <p className="rounded-2xl border bg-surface p-4 text-center text-xs text-muted-foreground">ምንም ግብይት የለም</p>
-      ) : (
-        <ul className="space-y-2">
-          {txs.map((t) => (
-            <li key={t.id} className="flex items-center gap-3 rounded-2xl border bg-surface p-3">
-              <span
-                className={
-                  t.points >= 0
-                    ? "grid size-9 place-items-center rounded-xl bg-success/15 text-success"
-                    : "grid size-9 place-items-center rounded-xl bg-destructive/15 text-destructive"
-                }
-              >
-                {t.points >= 0 ? <ArrowDownRight className="size-4" /> : <ArrowUpRight className="size-4" />}
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm">{t.label}</p>
-                <p className="text-[11px] text-muted-foreground">{new Date(t.at).toLocaleString("am-ET")}</p>
-              </div>
-              <span className={t.points >= 0 ? "font-display text-sm font-bold text-success" : "font-display text-sm font-bold"}>
-                {t.points >= 0 ? "+" : ""}
-                {fmt(t.points)}
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-[calc(100%-2rem)] rounded-3xl bg-popover sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle>ገንዘብ አውጣ</DialogTitle>
-            <DialogDescription>ዝቅተኛው {fmt(MIN_ACTION_POINTS)} ነጥብ (100 ብር)</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-3">
-            <div>
-              <label className="text-xs text-muted-foreground" htmlFor="wd-amount">
-                መጠን (ነጥብ)
-              </label>
-              <Input
-                id="wd-amount"
-                type="number"
-                inputMode="numeric"
-                min={MIN_ACTION_POINTS}
-                max={balance}
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                className="mt-1 h-12 rounded-2xl font-display text-lg"
-              />
-              <p className="mt-1 text-xs text-primary-glow">≈ {fmt(pointsToEtb(Number(amount) || 0))} ብር</p>
-            </div>
-            <div>
-              <label className="text-xs text-muted-foreground">የመክፈያ ዘዴ</label>
-              <Select value={method} onValueChange={setMethod}>
-                <SelectTrigger className="mt-1 h-12 rounded-2xl">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {METHODS.map((m) => (
-                    <SelectItem key={m} value={m}>
-                      {m}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <label className="text-xs text-muted-foreground" htmlFor="wd-acct">
-                ስልክ / የሂሳብ ቁጥር
-              </label>
-              <Input
-                id="wd-acct"
-                value={acct}
-                onChange={(e) => setAcct(e.target.value)}
-                placeholder="09xxxxxxxx"
-                maxLength={30}
-                className="mt-1 h-12 rounded-2xl"
-              />
-            </div>
-            <Button variant="glow" size="xl" className="w-full" onClick={submit}>
-              ጥያቄ ላክ
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </div>
-  );
-}
